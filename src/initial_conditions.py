@@ -19,7 +19,7 @@ def density_initial(polytropic_exponent, lambda_0, radius, radius_0):
     rho_rho0 = (a1 * a2 + 1) ** exponent  # rho / rho_0
     return rho_rho0
 
-def temperature_initial(polytropic_exponent, lambda_0, radius, radius_0)
+def temperature_initial(polytropic_exponent, lambda_0, radius, radius_0):
     a1 = ((polytropic_exponent - 1) / polytropic_exponent) * lambda_0
     a2 = (radius_0 / radius) - 1
     exponent = 1
