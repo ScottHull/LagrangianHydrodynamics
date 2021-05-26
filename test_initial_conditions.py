@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 num_shells = 2000
 r_0 = 6371e3  # initial planet radius
 mass_planet = 5.972 * 10 ** 24  # mass earth
-r_max = r_0 + (480 * 1000)  # height of the current Earth atmosphere, m
+r_max_pressure = r_0 + (480 * 1000)  # height of the current Earth atmosphere, m
 p_0 = 92.2  # initial planet surface pressure
 rho_0 = 1e-4  # initial planetary atmosphere at bottom# lambda_0 = 756.57  # escape parameter initial condition
 gamma_a = 1.31  # polytropic exponent
@@ -45,16 +45,28 @@ s = solver.LagrangianSolver1D(
 )
 
 fig = plt.figure(figsize=(16, 9))
-ax = fig.add_subplot(111)
-ax.plot(
+ax_pressure = fig.add_subplot(121)
+ax_pressure.plot(
     [p.radius for p in s.grid],
     [p.pressure for p in s.grid],
     linewidth=2.0,
     color='black'
 )
-ax.set_xlabel("r / r_0")
-ax.set_ylabel("P / P_0")
-ax.set_title("Pressure (IC)")
-ax.grid()
+ax_pressure.set_xlabel("r / r_0")
+ax_pressure.set_ylabel("P / P_0")
+ax_pressure.set_title("Pressure (IC)")
+ax_pressure.grid()
+
+ax_mass = fig.add_subplot(122)
+ax_mass.plot(
+    [p.radius for p in s.grid],
+    [p.mass for p in s.grid],
+    linewidth=2.0,
+    color='black'
+)
+ax_mass.set_xlabel("r / r_0")
+ax_mass.set_ylabel("m / (r_0^3 rho_0)")
+ax_mass.set_title("Mass (IC)")
+ax_mass.grid()
 
 plt.show()

@@ -20,6 +20,8 @@ class System:
 
     def __init__(self, num_shells, gamma_a, lambda_0, r_0, rho_0, P_0, T_0, P_max, rho_max, m_initial, v_0, m_a, gamma):
         self.num_shells = num_shells
+        self.G = 6.674 * 10 ** -11
+
         self.gamma_a = gamma_a
         self.gamma = gamma
         self.lambda_0 = lambda_0
