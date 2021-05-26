@@ -39,7 +39,7 @@ class LagrangianSolver1D:
         self.fname = "lagrangian_solver.csv"
         if self.fname in os.listdir(os.getcwd()):
             os.remove(self.fname)
-        self.outfile = open(self.fname, 'r')
+        self.outfile = open(self.fname, 'w')
         self.outfile.write("time,mass_loss\n")
 
     def __solve_q(self, grid_copy):
