@@ -17,7 +17,7 @@ def _r_last(polytropic_exponent, lambda_0, r_0):
 
 def radius_initial(index, total_shells, polytropic_exponent, lambda_0, r_0):
     r_last = _r_last(polytropic_exponent=polytropic_exponent, lambda_0=lambda_0, r_0=r_0)
-    return r_0 + ((index - 1 * (r_last - r_0) / total_shells))
+    return r_0 + ((index - 1) * ((r_last - r_0) / total_shells))
 
 
 def mass_initial(mass_last_index, rho_index, r_last_index, r_index):

@@ -36,6 +36,7 @@ class LagrangianSolver1D:
         self.c_s_0 = c_s_0
         self.mass_planet = mass_planet
         self.G = 6.674 * 10 ** -11
+        self.v_esc = sqrt((2 * self.G * self.mass_planet) / self.system.rho_0)
         self.fname = "lagrangian_solver.csv"
         if self.fname in os.listdir(os.getcwd()):
             os.remove(self.fname)

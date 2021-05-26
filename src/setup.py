@@ -1,6 +1,8 @@
 import src.initial_conditions as ic
 import src.nondimensional as nd
 
+from math import sqrt
+
 
 class Point:
     def __init__(self, id, q, mass, pressure, temperature, density, radius, velocity):
@@ -18,7 +20,6 @@ class System:
 
     def __init__(self, num_shells, gamma_a, lambda_0, r_0, rho_0, P_0, T_0, P_max, rho_max, m_initial, v_0, m_a, gamma):
         self.num_shells = num_shells
-
         self.gamma_a = gamma_a
         self.gamma = gamma
         self.lambda_0 = lambda_0

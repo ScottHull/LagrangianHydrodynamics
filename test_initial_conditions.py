@@ -1,63 +1,60 @@
-from src import nondimensional
+from src import solver
 from src import initial_conditions as ic
 
-import numpy as np
+from math import sqrt
 import matplotlib.pyplot as plt
 
+num_shells = 2000
 r_0 = 6371e3  # initial planet radius
+mass_planet = 5.972 * 10 ** 24  # mass earth
 r_max = r_0 + (480 * 1000)  # height of the current Earth atmosphere, m
-p_0 = 1.01e5  # initial planet surface pressure
-rho_0 = 1.22  # initial planetary atmosphere at bottom
-c_s_0 = 340  # initial sound velocity at bottom of atmosphere
-lambda_0 = 756.57  # escape parameter initial condition
-gamma_a = 1.4  # polytropic exponent
-gamma = 1.4  # specific heat
-M_a = 29  # g/mol  # molecule mass
+p_0 = 92.2  # initial planet surface pressure
+rho_0 = 1e-4  # initial planetary atmosphere at bottom# lambda_0 = 756.57  # escape parameter initial condition
+gamma_a = 1.31  # polytropic exponent
+gamma = 1.31  # specific heat
+M_a = 0.018  # g/mol  # molecule mass
 M_atm = 4.10 * 10 ** 18  # kg, total mass of initial atmosphere
+T_0 = 2000
+c_s_0 = sqrt(gamma_a * p_0 / rho_0)  # initial sound velocity at bottom of atmosphere
+t0 = r_0 / c_s_0
+dt = 0.01 / t0
 
-initial_conditions = []
+inner_boundary_velocity = 0
+inner_boundary_mass = 0
+outer_boundary_pressure = 0
+outer_boundary_density = 0
 
-inc = (r_max - r_0) / 1000
-for r in np.arange(r_0, r_max + inc, inc):
-    p_p0 = ic.pressure_initial(polytropic_exponent=gamma_a, lambda_0=lambda_0, radius=r, radius_0=r_0)
-    rho_rho0 = ic.density_initial(polytropic_exponent=gamma_a, lambda_0=lambda_0, radius=r, radius_0=r_0)
-    t_t0 = ic.temperature_initial(polytropic_exponent=gamma_a, lambda_0=lambda_0, radius=r, radius_0=r_0)
-    p = p_p0 * p_0
-    rho = rho_rho0 * rho_0
-    t = t_t0 * t_t0
-    initial_conditions.append((r / r_0, p_p0, rho_rho0, t_t0, p, rho, t))
+lambda_0 = ic.lambda_0_initial(mass_planet=mass_planet, P_0=p_0, r_0=r_0, rho_0=rho_0)
+s = solver.LagrangianSolver1D(
+    num_shells=num_shells,
+    P_max=outer_boundary_pressure,
+    rho_max=outer_boundary_density,
+    P_0=p_0,
+    rho_0=rho_0,
+    T_0=T_0,
+    gamma=gamma,
+    gamma_a=gamma_a,
+    lambda_0=lambda_0,
+    m_a=M_a,
+    m_initial=inner_boundary_mass,
+    r_0=r_0,
+    v_0=inner_boundary_velocity,
+    timestep=dt,
+    c_s_0=c_s_0,
+    mass_planet=mass_planet
+)
 
 fig = plt.figure(figsize=(16, 9))
-fig.suptitle('Initial Conditions')
-ax1 = fig.add_subplot(221)
-ax2 = fig.add_subplot(222)
-ax3 = fig.add_subplot(223)
-
-ax1.plot(
-    [i[0] for i in initial_conditions],
-    [i[1] for i in initial_conditions],
+ax = fig.add_subplot(111)
+ax.plot(
+    [p.radius for p in s.grid],
+    [p.pressure for p in s.grid],
     linewidth=2.0,
+    color='black'
 )
-ax1.set_xlabel("r / r0")
-ax1.set_ylabel("P / P0")
-ax1.grid()
-
-ax2.plot(
-    [i[0] for i in initial_conditions],
-    [i[2] for i in initial_conditions],
-    linewidth=2.0,
-)
-ax2.set_xlabel("r / r0")
-ax2.set_ylabel("rho / rho0")
-ax2.grid()
-
-ax3.plot(
-    [i[0] for i in initial_conditions],
-    [i[3] for i in initial_conditions],
-    linewidth=2.0,
-)
-ax3.set_xlabel("r / r0")
-ax3.set_ylabel("T / T0")
-ax3.grid()
+ax.set_xlabel("r / r_0")
+ax.set_ylabel("P / P_0")
+ax.set_title("Pressure (IC)")
+ax.grid()
 
 plt.show()
