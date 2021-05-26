@@ -6,8 +6,9 @@ Assumes a hydrostatically equilibrated polytropic atmosphere with polytropic exp
 """
 
 
-def lambda_0_initial(mass_planet, rho_0, r_0, P_0, G=6.674 * 10**-11):
+def lambda_0_initial(mass_planet, rho_0, r_0, P_0, G=6.674 * 10 ** -11):
     return (G * mass_planet * rho_0) / (r_0 * P_0)
+
 
 def _r_last(polytropic_exponent, lambda_0, r_0):
     numerator = (r_0 * polytropic_exponent * lambda_0) - (r_0 * lambda_0)

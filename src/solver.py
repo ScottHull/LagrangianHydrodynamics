@@ -24,8 +24,9 @@ class LagrangianSolver1D:
     def __init__(self, timestep, num_shells, gamma_a, lambda_0, r_0, rho_0, P_0, T_0, P_max, rho_max, m_initial, v_0,
                  m_a, gamma, c_s_0, mass_planet):
         self.system = setup.System(num_shells=num_shells, gamma_a=gamma_a, lambda_0=lambda_0, r_0=r_0, rho_0=rho_0,
-                                 P_0=P_0, T_0=T_0, P_max=P_max, rho_max=rho_max, m_initial=m_initial, v_0=v_0, m_a=m_a,
-                                 gamma=gamma)
+                                   P_0=P_0, T_0=T_0, P_max=P_max, rho_max=rho_max, m_initial=m_initial, v_0=v_0,
+                                   m_a=m_a,
+                                   gamma=gamma)
         self.grid = self.system.grid
         self.time = 0
         self.dt = timestep
@@ -61,8 +62,10 @@ class LagrangianSolver1D:
             for index, p in enumerate(grid_copy):
                 if index < len(self.grid) - 2:
                     grid_copy[index].pressure = self.pressure(index=index)
-                    grid_copy[index].density = self.density_mid_forward(index=index, radius_tplus=grid_copy[index].radius,
-                                                                    radius_tplus_forward=grid_copy[index + 1].radius)
+                    grid_copy[index].density = self.density_mid_forward(index=index,
+                                                                        radius_tplus=grid_copy[index].radius,
+                                                                        radius_tplus_forward=grid_copy[
+                                                                            index + 1].radius)
             self.grid = grid_copy
             self.mass_loss()
             self.time += self.dt
@@ -73,15 +76,13 @@ class LagrangianSolver1D:
 
         for p in self.grid:
             mass_loss = None
-            criterion = (p.velocity * self.c_s_0) / sqrt(((2 * self.G * self.mass_planet) / (self.system.r_0 * p.radius)))
+            criterion = (p.velocity * self.c_s_0) / sqrt(
+                ((2 * self.G * self.mass_planet) / (self.system.r_0 * p.radius)))
             if criterion > 1:
                 mass_loss = p.mass / self.grid[-1].mass
                 print("MASS LOSS ", mass_loss)
             if mass_loss is not None:
                 self.outfile.write("{},{}\n".format(self.time, mass_loss))
-
-
-
 
     def velocity(self, index):
         p = self.grid[index]
@@ -92,7 +93,8 @@ class LagrangianSolver1D:
             m_backwards = self.grid[index - 1].mass
             a1 = (8 * pi) / self.gamma
             a2 = (p.radius) ** 2
-            a3 = (self.grid[index].pressure - self.grid[index - 1].pressure + self.grid[index].q - self.grid[index - 1].q) / (m_forward - m_backwards)
+            a3 = (self.grid[index].pressure - self.grid[index - 1].pressure + self.grid[index].q - self.grid[
+                index - 1].q) / (m_forward - m_backwards)
             a4 = (self.lambda_0 / (self.gamma * (p.radius ** 2)))
 
             return p.velocity - (((a1 * a2 * a3) + a4) * self.dt)
@@ -102,14 +104,14 @@ class LagrangianSolver1D:
     def pressure(self, index):
         p = self.grid[index]
         if index < len(self.grid) - 2:
-            a1 = 4 * pi * self.grid[index].density
-            a2 = (self.gamma * self.grid[index].pressure) + ((self.gamma - 1) * self.grid[index + 1].q)
+            a1 = 4 * pi * p.density
+            a2 = (self.gamma * p.pressure) + ((self.gamma - 1) * self.grid[index].q)
             a3 = (((self.grid[index + 1].radius ** 2) * self.grid[index + 1].velocity) - (
                     (p.radius ** 2) * p.velocity)) / (
                          self.grid[index + 1].mass - p.mass)
-            return self.grid[index].pressure - ((a1 * a2 * a3) * self.dt)
+            return p.pressure - ((a1 * a2 * a3) * self.dt)
         else:
-            return self.grid[index].pressure
+            return p.pressure
 
     def numerical_viscosity_mid_forward(self, index):
         p = self.grid[index]
