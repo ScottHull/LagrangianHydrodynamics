@@ -38,6 +38,8 @@ s = solver.LagrangianSolver1D(
     m_initial=inner_boundary_mass,
     r_0=r_0,
     v_0=inner_boundary_velocity,
-    timestep=dt
+    timestep=dt,
+    c_s_0=c_s_0,
+    mass_planet=mass_planet
 )
 s.solve(timesteps=40000*5*2)

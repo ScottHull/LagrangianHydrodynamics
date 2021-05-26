@@ -1,3 +1,5 @@
+import os
+
 from src import initial_conditions as ic
 from src import nondimensional as nd
 from src import setup
@@ -20,16 +22,25 @@ class LagrangianSolver1D:
     """
 
     def __init__(self, timestep, num_shells, gamma_a, lambda_0, r_0, rho_0, P_0, T_0, P_max, rho_max, m_initial, v_0,
-                 m_a, gamma):
+                 m_a, gamma, c_s_0, mass_planet):
         self.system = setup.System(num_shells=num_shells, gamma_a=gamma_a, lambda_0=lambda_0, r_0=r_0, rho_0=rho_0,
                                  P_0=P_0, T_0=T_0, P_max=P_max, rho_max=rho_max, m_initial=m_initial, v_0=v_0, m_a=m_a,
                                  gamma=gamma)
         self.grid = self.system.grid
+        self.time = 0
         self.dt = timestep
         self.gamma = gamma
         self.q_coeff = 0.75
         self.num_shells = num_shells
         self.lambda_0 = lambda_0
+        self.c_s_0 = c_s_0
+        self.mass_planet = mass_planet
+        self.G =  6.674 * 10 ** -11
+        self.fname = "lagrangian_solver.csv"
+        if self.fname in os.listdir(os.getcwd()):
+            os.remove(self.fname)
+        self.outfile = open(self.fname, 'r')
+        self.outfile.write("time,mass_loss\n")
 
     def __solve_q(self, grid_copy):
         """
@@ -40,6 +51,7 @@ class LagrangianSolver1D:
 
     def solve(self, timesteps):
         for i in np.arange(0, timesteps, 1):
+            print("At time {} ({}/{} steps)".format(self.time, i, timesteps))
             grid_copy = copy(self.grid)
             self.__solve_q(grid_copy=grid_copy)
             for index, p in enumerate(grid_copy):
@@ -51,6 +63,23 @@ class LagrangianSolver1D:
                     grid_copy[index].density = self.density_mid_forward(index=index, radius_tplus=grid_copy[index].radius,
                                                                     radius_tplus_forward=grid_copy[index + 1].radius)
             self.grid = grid_copy
+            self.time += self.dt
+        self.outfile.close()
+        print("Finished!")
+
+    def mass_loss(self):
+
+        for p in self.grid:
+            mass_loss = None
+            criterion = (p.velocity * self.c_s_0) / sqrt(((2 * self.G * self.mass_planet) / (self.system.r_0 * p.radius)))
+            if criterion > 1:
+                mass_loss = p.mass / self.grid[-1].mass
+                print("MASS LOSS ", mass_loss)
+            if mass_loss is not None:
+                self.outfile.write("{},{}\n".format(self.time, mass_loss))
+
+
+
 
     def velocity(self, index):
         p = self.grid[index]
