@@ -35,7 +35,7 @@ class LagrangianSolver1D:
         self.lambda_0 = lambda_0
         self.c_s_0 = c_s_0
         self.mass_planet = mass_planet
-        self.G =  6.674 * 10 ** -11
+        self.G = 6.674 * 10 ** -11
         self.fname = "lagrangian_solver.csv"
         if self.fname in os.listdir(os.getcwd()):
             os.remove(self.fname)
@@ -63,6 +63,7 @@ class LagrangianSolver1D:
                     grid_copy[index].density = self.density_mid_forward(index=index, radius_tplus=grid_copy[index].radius,
                                                                     radius_tplus_forward=grid_copy[index + 1].radius)
             self.grid = grid_copy
+            self.mass_loss()
             self.time += self.dt
         self.outfile.close()
         print("Finished!")
