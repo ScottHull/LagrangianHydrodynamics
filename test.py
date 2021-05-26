@@ -43,31 +43,4 @@ s = solver.LagrangianSolver1D(
     c_s_0=c_s_0,
     mass_planet=mass_planet
 )
-s.solve(timesteps=20)
-
-fig = plt.figure(figsize=(16, 9))
-ax_pressure = fig.add_subplot(121)
-ax_pressure.plot(
-    [p.radius for p in s.grid],
-    [p.pressure for p in s.grid],
-    linewidth=2.0,
-    color='black'
-)
-ax_pressure.set_xlabel("r / r_0")
-ax_pressure.set_ylabel("P / P_0")
-ax_pressure.set_title("Pressure (IC)")
-ax_pressure.grid()
-
-ax_mass = fig.add_subplot(122)
-ax_mass.plot(
-    [p.radius for p in s.grid],
-    [p.mass for p in s.grid],
-    linewidth=2.0,
-    color='black'
-)
-ax_mass.set_xlabel("r / r_0")
-ax_mass.set_ylabel("m / (r_0^3 rho_0)")
-ax_mass.set_title("Mass (IC)")
-ax_mass.grid()
-
-plt.show()
+s.solve(timesteps=40000*5*2)
