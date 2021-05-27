@@ -18,7 +18,8 @@ class Point:
 
 class System:
 
-    def __init__(self, num_shells, gamma_a, lambda_0, r_0, rho_0, P_0, T_0, P_max, rho_max, m_initial, v_0, m_a, gamma):
+    def __init__(self, num_shells, gamma_a, lambda_0, r_0, rho_0, P_0, T_0, P_max, rho_max, m_initial, v_0, m_a, gamma,
+                 c_s_0):
         self.num_shells = num_shells
         self.G = 6.674 * 10 ** -11
 
@@ -31,6 +32,7 @@ class System:
         self.T_0 = T_0
         self.v_0 = v_0
         self.m_a = m_a
+        self.c_s_0 = c_s_0
 
         self.P_max = P_max
         self.rho_max = rho_max
@@ -91,4 +93,4 @@ class System:
             p.rho = nd.density_nd(density=p.density, density_0=self.rho_0)
             p.radius = nd.radius_nd(radius=p.radius, radius_0=self.r_0)
             p.velocity = nd.velocity_nd(velocity=p.velocity, density_0=self.rho_0, gamma=self.gamma,
-                                        pressure_0=self.P_0)
+                                        pressure_0=self.P_0, c_s_0=self.c_s_0)

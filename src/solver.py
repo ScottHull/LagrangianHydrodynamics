@@ -26,7 +26,7 @@ class LagrangianSolver1D:
         self.system = setup.System(num_shells=num_shells, gamma_a=gamma_a, lambda_0=lambda_0, r_0=r_0, rho_0=rho_0,
                                    P_0=P_0, T_0=T_0, P_max=P_max, rho_max=rho_max, m_initial=m_initial, v_0=v_0,
                                    m_a=m_a,
-                                   gamma=gamma)
+                                   gamma=gamma, c_s_0=c_s_0)
         self.grid = self.system.grid
         self.time = 0
         self.dt = timestep
@@ -48,8 +48,15 @@ class LagrangianSolver1D:
         """
         Note: this solves for index i-1/2 and i+1/2, but we will store at integer indices.
         """
-        for index in np.arange(0, len(self.grid), 1):
-            self.grid[index].q = self.numerical_viscosity_mid_forward(index=index)
+        for index in np.arange(0, len(self.grid) - 1, 1):
+            if self.grid[index].q is None:
+                self.grid[index].q = 0.0
+            if self.grid[index + 1].q is None:
+                self.grid[index + 1].q = 0.0
+            if self.grid[index + 1].velocity < self.grid[index].velocity:
+                self.grid[index].q = self.numerical_viscosity_mid_forward(index=index)
+            else:
+                self.grid[index].q = 0.0
 
     def solve(self, timesteps):
         for i in np.arange(0, timesteps, 1):
@@ -103,15 +110,12 @@ class LagrangianSolver1D:
 
     def pressure(self, index):
         p = self.grid[index]
-        if index < len(self.grid) - 2:
-            a1 = 4 * pi * p.density
-            a2 = (self.gamma * p.pressure) + ((self.gamma - 1) * self.grid[index].q)
-            a3 = (((self.grid[index + 1].radius ** 2) * self.grid[index + 1].velocity) - (
-                    (p.radius ** 2) * p.velocity)) / (
-                         self.grid[index + 1].mass - p.mass)
-            return p.pressure - ((a1 * a2 * a3) * self.dt)
-        else:
-            return p.pressure
+        a1 = 4 * pi * p.density
+        a2 = (self.gamma * p.pressure) + ((self.gamma - 1) * self.grid[index].q)
+        a3 = (((self.grid[index + 1].radius ** 2) * self.grid[index + 1].velocity) - (
+                (p.radius ** 2) * p.velocity)) / (
+                     self.grid[index + 1].mass - p.mass)
+        return p.pressure - ((a1 * a2 * a3) * self.dt)
 
     def numerical_viscosity_mid_forward(self, index):
         p = self.grid[index]
@@ -135,7 +139,7 @@ class LagrangianSolver1D:
         Note: this solves for index i-1/2 and i+1/2, but we will store at integer indices.
         """
         p = self.grid[index]
-        if index < len(self.grid) - 2:
-            a1 = (3 / (4 * pi))
-            a2 = (self.grid[index + 1].mass - p.mass) / ((radius_tplus_forward ** 3) - (radius_tplus ** 3))
-            return a1 * a2
+        a1 = (3 / (4 * pi))
+        print((radius_tplus_forward ** 3) - (radius_tplus ** 3))
+        a2 = (self.grid[index + 1].mass - p.mass) / ((radius_tplus_forward ** 3) - (radius_tplus ** 3))
+        return a1 * a2

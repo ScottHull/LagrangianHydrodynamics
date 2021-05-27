@@ -26,7 +26,8 @@ def mass_initial(mass_last_index, rho_index, r_last_index, r_index):
 
 
 def velocity_initial(polytropic_exponent, m_a, T_index, R_gas=8.314462):
-    return sqrt(((polytropic_exponent * R_gas) / m_a) * T_index)
+    # return sqrt(((polytropic_exponent * R_gas) / m_a) * T_index)
+    return 0.0
 
 
 def pressure_initial(polytropic_exponent, lambda_0, radius, radius_0, p_0):

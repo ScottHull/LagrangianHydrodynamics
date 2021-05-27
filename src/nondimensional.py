@@ -25,8 +25,8 @@ def temperature_nd(temperature, temperature_0):
     return temperature / temperature_0
 
 
-def velocity_nd(velocity, gamma, pressure_0, density_0):
-    c_s_0 = soundspeed_0(gamma=gamma, pressure_0=pressure_0, density_0=density_0)
+def velocity_nd(velocity, gamma, pressure_0, density_0, c_s_0):
+    # c_s_0 = soundspeed_0(gamma=gamma, pressure_0=pressure_0, density_0=density_0)
     return velocity / c_s_0
 
 
