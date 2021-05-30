@@ -18,43 +18,27 @@ class Point:
 
 class System:
 
-    def __init__(self, num_shells, gamma_a, lambda_0, r_0, rho_0, P_0, T_0, P_max, rho_max, m_initial, v_0, m_a, gamma,
-                 c_s_0):
+    def __init__(self, num_shells, gamma_a, mass_planet, r_0, rho_0, P_0, T_0, m_a, gamma):
         self.num_shells = num_shells
-        self.G = 6.674 * 10 ** -11
+        self.G = 6.67408e-11
 
         self.gamma_a = gamma_a
         self.gamma = gamma
-        self.lambda_0 = lambda_0
         self.r_0 = r_0
         self.rho_0 = rho_0
         self.P_0 = P_0
         self.T_0 = T_0
-        self.v_0 = v_0
         self.m_a = m_a
-        self.c_s_0 = c_s_0
-
-        self.P_max = P_max
-        self.rho_max = rho_max
-        self.m_initial = m_initial
+        self.mass_planet = mass_planet
+        self.lambda_0 = self.G * self.mass_planet * self.rho_0 / (self.r_0 * self.P_0)
+        self.c_s_0 = sqrt(gamma_a * self.P_0 / self.rho_0)
 
         self.grid = []
         self.__setup_grid()
         self.__nondimensionalize_initial()
 
     def __setup_grid(self):
-        current = 1
-        point_init = Point(
-            id=current - 1,
-            q=None,
-            mass=self.m_initial,
-            pressure=self.P_0,
-            temperature=self.T_0,
-            density=self.rho_0,
-            radius=self.r_0,
-            velocity=self.v_0
-        )
-        self.grid.append(point_init)
+        current = 0
 
         while current <= self.num_shells:
             r = ic.radius_initial(index=current, lambda_0=self.lambda_0, polytropic_exponent=self.gamma_a, r_0=self.r_0,
@@ -65,13 +49,13 @@ class System:
                                        radius_0=self.r_0)
             rho = ic.density_initial(polytropic_exponent=self.gamma_a, lambda_0=self.lambda_0, rho_0=self.rho_0,
                                      radius=r, radius_0=self.r_0)
-            m = ic.mass_initial(mass_last_index=self.grid[current - 1].mass, r_index=r,
+            if current > 0:
+                m = ic.mass_initial(mass_last_index=self.grid[current - 1].mass, r_index=r,
                                 r_last_index=self.grid[current - 1].radius, rho_index=rho)
+            else:
+                m = 0
             v = ic.velocity_initial(polytropic_exponent=self.gamma_a, T_index=T, m_a=self.m_a)
-            if current == self.num_shells:
-                rho = 0.0
-                P = 0.0
-            q = None
+            q = 0
             point = Point(
                 id=current,
                 q=q,
@@ -84,13 +68,15 @@ class System:
             )
             self.grid.append(point)
             current += 1
+        self.grid[-1].pressure = 0.0
+        self.grid[-1].density = 0.0
 
     def __nondimensionalize_initial(self):
         for p in self.grid:
-            p.mass = nd.mass_nd(mass=p.mass, density_0=self.rho_0, radius_0=self.rho_0)
+            p.mass = nd.mass_nd(mass=p.mass, density_0=self.rho_0, radius_0=self.r_0)
             p.pressure = nd.pressure_nd(pressure=p.pressure, pressure_0=self.P_0)
             p.temperature = nd.temperature_nd(temperature=p.temperature, temperature_0=self.T_0)
-            p.rho = nd.density_nd(density=p.density, density_0=self.rho_0)
+            p.density = nd.density_nd(density=p.density, density_0=self.rho_0)
             p.radius = nd.radius_nd(radius=p.radius, radius_0=self.r_0)
             p.velocity = nd.velocity_nd(velocity=p.velocity, density_0=self.rho_0, gamma=self.gamma,
                                         pressure_0=self.P_0, c_s_0=self.c_s_0)

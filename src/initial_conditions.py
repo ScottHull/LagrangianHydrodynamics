@@ -18,7 +18,7 @@ def _r_last(polytropic_exponent, lambda_0, r_0):
 
 def radius_initial(index, total_shells, polytropic_exponent, lambda_0, r_0):
     r_last = _r_last(polytropic_exponent=polytropic_exponent, lambda_0=lambda_0, r_0=r_0)
-    return r_0 + ((index) * ((r_last - r_0) / total_shells))
+    return r_0 + (index * ((r_last - r_0) / total_shells))
 
 
 def mass_initial(mass_last_index, rho_index, r_last_index, r_index):
@@ -41,7 +41,7 @@ def pressure_initial(polytropic_exponent, lambda_0, radius, radius_0, p_0):
 def density_initial(polytropic_exponent, lambda_0, radius, radius_0, rho_0):
     a1 = ((polytropic_exponent - 1) / polytropic_exponent) * lambda_0
     a2 = (radius_0 / radius) - 1
-    exponent = 1 / (polytropic_exponent - 1)
+    exponent = 1.0 / (polytropic_exponent - 1)
     rho_rho0 = (a1 * a2 + 1) ** exponent  # rho / rho_0
     return rho_rho0 * rho_0
 
