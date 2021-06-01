@@ -74,7 +74,7 @@ class LagrangianSolver1D:
 
     def __cfl_dt(self):
         dt = self.dt
-        for i in range(0, self.num_shells - 2):
+        for i in range(0, self.num_shells - 1):
             criterion = (self.grid[i + 1].radius - self.grid[i].radius) / self.grid[i].velocity
             if dt > criterion:
                 dt = 0.25 * ((self.grid[i + 1].radius - self.grid[i].radius) / self.grid[i].velocity)
@@ -91,15 +91,13 @@ class LagrangianSolver1D:
                 self.grid[index].q = 0.0
 
     def mass_loss(self):
-        mass_loss = None
         for p in self.grid:
             criterion = (p.velocity * self.system.c_s_0) / sqrt(
                 ((2.0 * self.system.G * self.mass_planet) / (self.system.r_0 * p.radius)))
             if criterion > 1:
-                mass_loss = 1 - (p.mass / self.grid[-1].mass)
-        if mass_loss is not None:
-            print("MASS LOSS ", mass_loss)
-            self.outfile.write("{},{}\n".format(self.__time_dimensional(), mass_loss))
+                mass_loss = 1.0 - (p.mass / self.grid[-1].mass)
+                print("MASS LOSS ", mass_loss)
+                self.outfile.write("{},{}\n".format(self.__time_dimensional(), mass_loss))
 
     def velocity(self, index):
         p = self.grid[index]
