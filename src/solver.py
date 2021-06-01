@@ -44,7 +44,7 @@ class LagrangianSolver1D:
 
     def solve(self, timesteps):
         for i in range(0, timesteps):
-            print("At time {} ({}/{} steps)".format(self.__time_dimensional(), i, timesteps))
+            # print("At time {} ({}/{} steps)".format(self.__time_dimensional(), i, timesteps))
             grid_copy = copy(self.grid)
             self.__solve_q(grid_copy=grid_copy)
             for index, p in enumerate(grid_copy):
@@ -96,7 +96,6 @@ class LagrangianSolver1D:
                 ((2.0 * self.system.G * self.mass_planet) / (self.system.r_0 * p.radius)))
             if criterion > 1:
                 mass_loss = 1 - (p.mass / self.grid[-1].mass)
-                print("MASS LOSS ", mass_loss)
                 self.outfile.write("{},{}\n".format(self.__time_dimensional(), mass_loss))
                 break  # only get the lowest radial index
 
