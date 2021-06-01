@@ -51,6 +51,8 @@ for i in range(0, n):
     temp[i] = pp[i] / rho[i] * Ma / Rgas
     # uu[i] = (sqrt(gamma_a * Rgas / Ma * temp[i]))
     uu[i] = 0.0
+print(rho)
+sys.exit()
 
 # inner boundary conditions
 uu[0] = 0.5 * vesc
@@ -166,7 +168,6 @@ for l in range(0, nt):
 
     for i in range(0, n - 2):
         if dt > ((rr[i + 1] - (rr[i])) / uu[i]):
-            print("HERE")
             dt = 0.25 * ((rr[i + 1] - (rr[i])) / uu[i])
 
     # if l % 100 == 0:

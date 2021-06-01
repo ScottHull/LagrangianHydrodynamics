@@ -41,7 +41,7 @@ class System:
     def __setup_grid(self):
         current = 0
 
-        while current <= self.num_shells:
+        while current < self.num_shells:
             r = ic.radius_initial(index=current, lambda_0=self.lambda_0, polytropic_exponent=self.gamma_a, r_0=self.r_0,
                                   total_shells=self.num_shells)
             P = ic.pressure_initial(polytropic_exponent=self.gamma_a, lambda_0=self.lambda_0, p_0=self.P_0, radius=r,

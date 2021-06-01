@@ -22,6 +22,7 @@ def radius_initial(index, total_shells, polytropic_exponent, lambda_0, r_0):
 
 
 def mass_initial(mass_last_index, rho_index, r_last_index, r_index):
+    # print(mass_last_index, rho_index, r_last_index, r_index)
     return mass_last_index + (rho_index * (4 / 3) * pi * ((r_index ** 3) - (r_last_index ** 3)))
 
 

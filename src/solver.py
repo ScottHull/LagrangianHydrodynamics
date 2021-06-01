@@ -44,7 +44,7 @@ class LagrangianSolver1D:
 
     def solve(self, timesteps):
         for i in range(0, timesteps):
-            print("At time {} ({}/{} steps)".format(self.time, i, timesteps))
+            print("At time {} ({}/{} steps)".format(self.time * (self.system.r_0 / self.system.c_s_0), i, timesteps))
             grid_copy = copy(self.grid)
             self.__solve_q(grid_copy=grid_copy)
             for index, p in enumerate(grid_copy):
@@ -73,7 +73,6 @@ class LagrangianSolver1D:
         for i in range(0, self.num_shells - 2):
             criterion = (self.grid[i + 1].radius - self.grid[i].radius) / self.grid[i].velocity
             if dt > criterion:
-                print("HERE")
                 dt = 0.25 * ((self.grid[i + 1].radius - self.grid[i].radius) / self.grid[i].velocity)
         self.dt = dt
 
@@ -81,7 +80,7 @@ class LagrangianSolver1D:
         """
         Note: this solves for index i-1/2 and i+1/2, but we will store at integer indices.
         """
-        for index in range(0, self.num_shells):
+        for index in range(0, self.num_shells - 1):
             if self.grid[index + 1].velocity < self.grid[index].velocity:
                 self.grid[index].q = self.numerical_viscosity_mid_forward(index=index)
             else:
@@ -94,6 +93,7 @@ class LagrangianSolver1D:
                 ((2 * self.system.G * self.mass_planet) / (self.system.r_0 * p.radius)))
             if criterion > 1:
                 mass_loss = p.mass / self.grid[-1].mass
+                print(p.mass, self.grid[-1].mass, p.mass / self.grid[-1].mass)
         if mass_loss is not None:
             print("MASS LOSS ", mass_loss)
             self.outfile.write("{},{}\n".format(self.time, mass_loss))
