@@ -61,7 +61,7 @@ class LagrangianSolver1D:
             grid_copy[-1].pressure = 0.0
             grid_copy[-1].density = 0.0
             self.grid = grid_copy
-            self.plot_timestep(timestep=i, plot_separation=100)
+            # self.plot_timestep(timestep=i, plot_separation=100)
             self.mass_loss()
             self.time += self.dt
             self.__cfl_dt()
@@ -88,15 +88,15 @@ class LagrangianSolver1D:
                 self.grid[index].q = 0.0
 
     def mass_loss(self):
+        mass_loss = None
         for p in self.grid:
-            mass_loss = None
             criterion = (p.velocity * self.system.c_s_0) / sqrt(
                 ((2 * self.system.G * self.mass_planet) / (self.system.r_0 * p.radius)))
             if criterion > 1:
                 mass_loss = p.mass / self.grid[-1].mass
-                print("MASS LOSS ", mass_loss)
-            if mass_loss is not None:
-                self.outfile.write("{},{}\n".format(self.time, mass_loss))
+        if mass_loss is not None:
+            print("MASS LOSS ", mass_loss)
+            self.outfile.write("{},{}\n".format(self.time, mass_loss))
 
     def velocity(self, index):
         p = self.grid[index]
