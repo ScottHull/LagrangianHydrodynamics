@@ -153,7 +153,7 @@ for l in range(0, nt):
     for i in range(0, n):
         criterion = uu[i] * c0 / sqrt(2 * G * Mp / (r0 * rr[i]))
         if criterion > 1:
-            Mloss = mm[i] / mm[-1]
+            Mloss = 1.0 - (mm[i] / mm[-1])
     print("Mass loss: {}".format(Mloss))
 
     tt += dt
