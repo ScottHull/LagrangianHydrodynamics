@@ -95,9 +95,10 @@ class LagrangianSolver1D:
             criterion = (p.velocity * self.system.c_s_0) / sqrt(
                 ((2.0 * self.system.G * self.mass_planet) / (self.system.r_0 * p.radius)))
             if criterion > 1:
-                mass_loss = 1.0 - (p.mass / self.grid[-1].mass)
+                mass_loss = 1 - (p.mass / self.grid[-1].mass)
                 print("MASS LOSS ", mass_loss)
                 self.outfile.write("{},{}\n".format(self.__time_dimensional(), mass_loss))
+                break  # only get the lowest radial index
 
     def velocity(self, index):
         p = self.grid[index]
