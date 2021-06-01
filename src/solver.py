@@ -49,10 +49,11 @@ class LagrangianSolver1D:
             self.__solve_q(grid_copy=grid_copy)
             for index, p in enumerate(grid_copy):
                 p.velocity = self.velocity(index=index)
-                p.radius = self.radius(index=index, velocity_tplus=p.velocity)
             grid_copy[-1].velocity = grid_copy[-2].velocity
             for index, p in enumerate(grid_copy):
-                if index < len(self.grid) - 2:
+                p.radius = self.radius(index=index, velocity_tplus=p.velocity)
+            for index, p in enumerate(grid_copy):
+                if index < len(self.grid) - 1:
                     p.pressure = self.pressure(index=index)
                     p.density = self.density_mid_forward(index=index,
                                                          radius_tplus=p.radius,
@@ -61,7 +62,7 @@ class LagrangianSolver1D:
             grid_copy[-1].pressure = 0.0
             grid_copy[-1].density = 0.0
             self.grid = grid_copy
-            # self.plot_timestep(timestep=i, plot_separation=100)
+            self.plot_timestep(timestep=i, plot_separation=1000)
             self.mass_loss()
             self.time += self.dt
             self.__cfl_dt()
@@ -104,7 +105,7 @@ class LagrangianSolver1D:
         p = self.grid[index]
         if index == 0:
             return self.grid[index].velocity - (self.lambda_0 / self.gamma / (self.grid[index].radius ** 2)) * self.dt
-        elif index < len(self.grid) - 2:
+        elif index < len(self.grid) - 1:
             m_forward = self.grid[index + 1].mass
             m_backwards = self.grid[index - 1].mass
             a1 = (8 * pi) / self.gamma
@@ -113,8 +114,8 @@ class LagrangianSolver1D:
                 index - 1].q) / (m_forward - m_backwards)
             a4 = (self.lambda_0 / (self.gamma * (p.radius ** 2)))
             return p.velocity - (((a1 * a2 * a3) + a4) * self.dt)
-        else:
-            return self.grid[index].velocity
+        # else:
+        #     return self.grid[index].velocity
 
     def pressure(self, index):
         p = self.grid[index]
@@ -206,7 +207,7 @@ class LagrangianSolver1D:
         ax_density.grid()
         ax_velocity.grid()
         ax_mass.grid()
-        fig.suptitle("Time: {}".format(self.time))
+        fig.suptitle("Time: {}".format(self.__time_dimensional()))
 
         if show:
             plt.show()

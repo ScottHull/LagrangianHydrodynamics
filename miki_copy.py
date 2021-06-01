@@ -51,8 +51,6 @@ for i in range(0, n):
     temp[i] = pp[i] / rho[i] * Ma / Rgas
     # uu[i] = (sqrt(gamma_a * Rgas / Ma * temp[i]))
     uu[i] = 0.0
-print(rho)
-sys.exit()
 
 # inner boundary conditions
 uu[0] = 0.5 * vesc
@@ -69,58 +67,58 @@ for i in range(0, n):
 pp[n - 1] = 0.0
 rho[n - 1] = 0.0
 
-fig = plt.figure(figsize=(16, 9))
-ax_pressure = fig.add_subplot(221)
-ax_density = fig.add_subplot(222)
-ax_velocity = fig.add_subplot(223)
-ax_mass = fig.add_subplot(224)
-ax_pressure.plot(
-    rr,
-    pp,
-    linewidth=2.0,
-    color='black'
-)
-ax_density.plot(
-    rr,
-    rho,
-    linewidth=2.0,
-    color='black'
-)
-ax_velocity.plot(
-    rr,
-    [i * c0 / vesc for i in uu],
-    linewidth=2.0,
-    color='black'
-)
-ax_mass.plot(
-    rr,
-    mm,
-    linewidth=2.0,
-    color='black'
-)
-ax_pressure.set_xlabel("r / r0")
-ax_density.set_xlabel("r / r0")
-ax_velocity.set_xlabel("r / r0")
-ax_mass.set_xlabel("r / r0")
-ax_pressure.set_ylabel("P / P0")
-ax_density.set_ylabel("rho / rho0")
-ax_velocity.set_ylabel("u / u_esc")
-ax_mass.set_ylabel("m / (r_0^3 rho_0)")
-ax_pressure.set_title("Pressure (IC)")
-ax_density.set_title("Density (IC)")
-ax_velocity.set_title("Velocity (IC)")
-ax_mass.set_title("Mass (IC)")
-ax_pressure.grid()
-ax_density.grid()
-ax_velocity.grid()
-ax_mass.grid()
+# fig = plt.figure(figsize=(16, 9))
+# ax_pressure = fig.add_subplot(221)
+# ax_density = fig.add_subplot(222)
+# ax_velocity = fig.add_subplot(223)
+# ax_mass = fig.add_subplot(224)
+# ax_pressure.plot(
+#     rr,
+#     pp,
+#     linewidth=2.0,
+#     color='black'
+# )
+# ax_density.plot(
+#     rr,
+#     rho,
+#     linewidth=2.0,
+#     color='black'
+# )
+# ax_velocity.plot(
+#     rr,
+#     [i * c0 / vesc for i in uu],
+#     linewidth=2.0,
+#     color='black'
+# )
+# ax_mass.plot(
+#     rr,
+#     mm,
+#     linewidth=2.0,
+#     color='black'
+# )
+# ax_pressure.set_xlabel("r / r0")
+# ax_density.set_xlabel("r / r0")
+# ax_velocity.set_xlabel("r / r0")
+# ax_mass.set_xlabel("r / r0")
+# ax_pressure.set_ylabel("P / P0")
+# ax_density.set_ylabel("rho / rho0")
+# ax_velocity.set_ylabel("u / u_esc")
+# ax_mass.set_ylabel("m / (r_0^3 rho_0)")
+# ax_pressure.set_title("Pressure (IC)")
+# ax_density.set_title("Density (IC)")
+# ax_velocity.set_title("Velocity (IC)")
+# ax_mass.set_title("Mass (IC)")
+# ax_pressure.grid()
+# ax_density.grid()
+# ax_velocity.grid()
+# ax_mass.grid()
 
 # plt.show()
 
 # time-dependent part
 dt = 0.001 / t0
 tt = 0
-nt = 10000
+nt = 50000
 
 for l in range(0, nt):
     print("At time: {} ({}/{})".format(tt, l, nt))
@@ -170,52 +168,52 @@ for l in range(0, nt):
         if dt > ((rr[i + 1] - (rr[i])) / uu[i]):
             dt = 0.25 * ((rr[i + 1] - (rr[i])) / uu[i])
 
-    # if l % 100 == 0:
-    fig = plt.figure(figsize=(16, 9))
-    ax_pressure = fig.add_subplot(221)
-    ax_density = fig.add_subplot(222)
-    ax_velocity = fig.add_subplot(223)
-    ax_mass = fig.add_subplot(224)
-    ax_pressure.plot(
-        rr,
-        pp,
-        linewidth=2.0,
-        color='black'
-    )
-    ax_density.plot(
-        rr,
-        rho,
-        linewidth=2.0,
-        color='black'
-    )
-    ax_velocity.plot(
-        rr,
-        [i * c0 / vesc for i in uu],
-        linewidth=2.0,
-        color='black'
-    )
-    ax_mass.plot(
-        rr,
-        mm,
-        linewidth=2.0,
-        color='black'
-    )
-    ax_pressure.set_xlabel("r / r0")
-    ax_density.set_xlabel("r / r0")
-    ax_velocity.set_xlabel("r / r0")
-    ax_mass.set_xlabel("r / r0")
-    ax_pressure.set_ylabel("P / P0")
-    ax_density.set_ylabel("rho / rho0")
-    ax_velocity.set_ylabel("u / u_esc")
-    ax_mass.set_ylabel("m / (r_0^3 rho_0)")
-    ax_pressure.set_title("Pressure (IC)")
-    ax_density.set_title("Density (IC)")
-    ax_velocity.set_title("Velocity (IC)")
-    ax_mass.set_title("Mass (IC)")
-    ax_pressure.grid()
-    ax_density.grid()
-    ax_velocity.grid()
-    ax_mass.grid()
-    fig.suptitle("Time: {}".format(tt))
+    if l % 2000 == 0:
+        fig = plt.figure(figsize=(16, 9))
+        ax_pressure = fig.add_subplot(221)
+        ax_density = fig.add_subplot(222)
+        ax_velocity = fig.add_subplot(223)
+        ax_mass = fig.add_subplot(224)
+        ax_pressure.plot(
+            rr,
+            pp,
+            linewidth=2.0,
+            color='black'
+        )
+        ax_density.plot(
+            rr,
+            rho,
+            linewidth=2.0,
+            color='black'
+        )
+        ax_velocity.plot(
+            rr,
+            [i * c0 / vesc for i in uu],
+            linewidth=2.0,
+            color='black'
+        )
+        ax_mass.plot(
+            rr,
+            mm,
+            linewidth=2.0,
+            color='black'
+        )
+        ax_pressure.set_xlabel("r / r0")
+        ax_density.set_xlabel("r / r0")
+        ax_velocity.set_xlabel("r / r0")
+        ax_mass.set_xlabel("r / r0")
+        ax_pressure.set_ylabel("P / P0")
+        ax_density.set_ylabel("rho / rho0")
+        ax_velocity.set_ylabel("u / u_esc")
+        ax_mass.set_ylabel("m / (r_0^3 rho_0)")
+        ax_pressure.set_title("Pressure (IC)")
+        ax_density.set_title("Density (IC)")
+        ax_velocity.set_title("Velocity (IC)")
+        ax_mass.set_title("Mass (IC)")
+        ax_pressure.grid()
+        ax_density.grid()
+        ax_velocity.grid()
+        ax_mass.grid()
+        fig.suptitle("Time: {}".format(tt))
 
-    plt.show()
+        plt.show()
