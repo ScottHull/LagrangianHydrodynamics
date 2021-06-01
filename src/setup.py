@@ -30,6 +30,7 @@ class System:
         self.T_0 = T_0
         self.m_a = m_a
         self.mass_planet = mass_planet
+        self.vesc = sqrt(2 * self.G * self.mass_planet / self.r_0)
         self.lambda_0 = self.G * self.mass_planet * self.rho_0 / (self.r_0 * self.P_0)
         self.c_s_0 = sqrt(gamma_a * self.P_0 / self.rho_0)
 
@@ -51,7 +52,7 @@ class System:
                                      radius=r, radius_0=self.r_0)
             if current > 0:
                 m = ic.mass_initial(mass_last_index=self.grid[current - 1].mass, r_index=r,
-                                r_last_index=self.grid[current - 1].radius, rho_index=rho)
+                                    r_last_index=self.grid[current - 1].radius, rho_index=rho)
             else:
                 m = 0
             v = ic.velocity_initial(polytropic_exponent=self.gamma_a, T_index=T, m_a=self.m_a)
@@ -70,6 +71,7 @@ class System:
             current += 1
         self.grid[-1].pressure = 0.0
         self.grid[-1].density = 0.0
+        self.grid[0].velocity = 0.5 * self.vesc
 
     def __nondimensionalize_initial(self):
         for p in self.grid:
