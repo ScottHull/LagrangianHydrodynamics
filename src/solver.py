@@ -69,7 +69,7 @@ class LagrangianSolver1D:
         print("Finished!")
 
     def __time_dimensional(self):
-        return self.time * (self.system.r_0 / self.system.c_s_0
+        return self.time * (self.system.r_0 / self.system.c_s_0)
 
     def __cfl_dt(self):
         dt = self.dt
@@ -96,7 +96,6 @@ class LagrangianSolver1D:
                 ((2 * self.system.G * self.mass_planet) / (self.system.r_0 * p.radius)))
             if criterion > 1:
                 mass_loss = p.mass / self.grid[-1].mass
-                print(p.mass, self.grid[-1].mass, p.mass / self.grid[-1].mass)
         if mass_loss is not None:
             print("MASS LOSS ", mass_loss)
             self.outfile.write("{},{}\n".format(self.__time_dimensional(), mass_loss))
