@@ -21,7 +21,7 @@ class LagrangianSolver1D:
     p is the pressure.
     """
 
-    def __init__(self, num_shells, gamma_a, r_0, P_0, T_0, m_a, gamma, mass_planet, R=8.3):
+    def __init__(self, num_shells, gamma_a, r_0, P_0, T_0, m_a, gamma, mass_planet, R=8.3145):
         num_shells += 1
         rho_0 = P_0 * m_a / (T_0 * R)  # ideal gas
         self.system = setup.System(num_shells=num_shells, gamma_a=gamma_a, mass_planet=mass_planet, r_0=r_0,
@@ -63,7 +63,7 @@ class LagrangianSolver1D:
             grid_copy[-1].pressure = 0.0
             grid_copy[-1].density = 0.0
             self.grid = grid_copy
-            # self.mass_loss()
+            self.mass_loss()
             self.time += self.dt
         self.outfile.close()
         print("Finished!")
@@ -101,9 +101,6 @@ class LagrangianSolver1D:
             a3 = (p.pressure - self.grid[index - 1].pressure + p.q - self.grid[
                 index - 1].q) / (m_forward - m_backwards)
             a4 = (self.lambda_0 / (self.gamma * (p.radius ** 2)))
-            # print(self.grid[index + 1].mass, self.grid[index - 1].mass, self.gamma, p.pressure,
-            #       self.grid[index - 1].pressure, p.q, self.grid[
-            #           index - 1].q, self.dt, p.velocity - (((a1 * a2 * a3) + a4) * self.dt))
             print("~", index, self.grid[index + 1].mass, self.grid[index - 1].mass, p.radius, p.pressure,
                   self.grid[index - 1].pressure, p.q, self.grid[
                       index - 1].q, p.velocity, p.velocity - (((a1 * a2 * a3) + a4) * self.dt))
