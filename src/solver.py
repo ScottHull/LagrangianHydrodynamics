@@ -44,7 +44,7 @@ class LagrangianSolver1D:
 
     def solve(self, timesteps):
         for i in range(0, timesteps):
-            print("At time {} ({}/{} steps)".format(self.time * (self.system.r_0 / self.system.c_s_0), i, timesteps))
+            print("At time {} ({}/{} steps)".format(self.__time_dimensional(), i, timesteps))
             grid_copy = copy(self.grid)
             self.__solve_q(grid_copy=grid_copy)
             for index, p in enumerate(grid_copy):
@@ -67,6 +67,9 @@ class LagrangianSolver1D:
             self.__cfl_dt()
         self.outfile.close()
         print("Finished!")
+
+    def __time_dimensional(self):
+        return self.time * (self.system.r_0 / self.system.c_s_0
 
     def __cfl_dt(self):
         dt = self.dt
@@ -96,7 +99,7 @@ class LagrangianSolver1D:
                 print(p.mass, self.grid[-1].mass, p.mass / self.grid[-1].mass)
         if mass_loss is not None:
             print("MASS LOSS ", mass_loss)
-            self.outfile.write("{},{}\n".format(self.time, mass_loss))
+            self.outfile.write("{},{}\n".format(self.__time_dimensional(), mass_loss))
 
     def velocity(self, index):
         p = self.grid[index]
