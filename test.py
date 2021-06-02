@@ -23,4 +23,4 @@ s = solver.LagrangianSolver1D(
     r_0=r_0,
     mass_planet=mass_planet,
 )
-s.solve(timesteps=40000 * 5 * 2)
+s.solve(timesteps=int(2e6))

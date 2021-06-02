@@ -90,8 +90,8 @@ class LagrangianSolver1D:
             else:
                 self.grid[index].q = 0.0
 
-    def mass_loss(self):
-        if self.__time_dimensional() % 0.5 == 0:
+    def mass_loss(self, timestep, timestep_separator=100):
+        if timestep % timestep_separator == 0:
             for p in self.grid:
                 criterion = (p.velocity * self.system.c_s_0) / sqrt(
                     ((2.0 * self.system.G * self.mass_planet) / (self.system.r_0 * p.radius)))
