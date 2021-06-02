@@ -61,7 +61,7 @@ class LagrangianSolver1D:
                                                              index + 1].radius)
             grid_copy[-1].pressure = 0.0
             grid_copy[-1].density = 0.0
-            self.mass_loss()
+            self.mass_loss(timestep=i, timestep_separator=100)
             self.grid = grid_copy
             # self.plot_timestep(timestep=i, plot_separation=3000)
             self.time += self.dt
