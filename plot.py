@@ -15,5 +15,6 @@ ax.plot(
 ax.set_xlabel("Time (s)")
 ax.set_ylabel("Mass Loss Fraction")
 ax.set_title("Volatile Mass Loss Fraction")
+ax.grid()
 
 plt.savefig("mass_loss.png", format='png')
