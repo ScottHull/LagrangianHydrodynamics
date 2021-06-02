@@ -63,7 +63,7 @@ class LagrangianSolver1D:
             grid_copy[-1].density = 0.0
             self.mass_loss()
             self.grid = grid_copy
-            self.plot_timestep(timestep=i, plot_separation=3000)
+            # self.plot_timestep(timestep=i, plot_separation=3000)
             self.time += self.dt
             self.__cfl_dt()
         self.outfile.close()
@@ -91,13 +91,14 @@ class LagrangianSolver1D:
                 self.grid[index].q = 0.0
 
     def mass_loss(self):
-        for p in self.grid:
-            criterion = (p.velocity * self.system.c_s_0) / sqrt(
-                ((2.0 * self.system.G * self.mass_planet) / (self.system.r_0 * p.radius)))
-            if criterion > 1:
-                mass_loss = 1.0 - (p.mass / self.grid[-1].mass)
-                self.outfile.write("{},{}\n".format(self.__time_dimensional(), mass_loss))
-                break  # only get the lowest radial index
+        if self.__time_dimensional() % 0.5 == 0:
+            for p in self.grid:
+                criterion = (p.velocity * self.system.c_s_0) / sqrt(
+                    ((2.0 * self.system.G * self.mass_planet) / (self.system.r_0 * p.radius)))
+                if criterion > 1:
+                    mass_loss = 1.0 - (p.mass / self.grid[-1].mass)
+                    self.outfile.write("{},{}\n".format(self.__time_dimensional(), mass_loss))
+                    break  # only get the lowest radial index
 
     def velocity(self, index):
         p = self.grid[index]
