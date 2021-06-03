@@ -1,14 +1,10 @@
 import os
-
-from src import initial_conditions as ic
-from src import nondimensional as nd
-from src import setup
-
+import shutil
 from math import pi, sqrt
-import numpy as np
 from copy import copy
 import matplotlib.pyplot as plt
-import sys
+
+from src import setup, output
 
 
 class LagrangianSolver1D:
@@ -22,8 +18,9 @@ class LagrangianSolver1D:
     p is the pressure.
     """
 
-    def __init__(self, num_shells, gamma_a, r_0, P_0, T_0, m_a, gamma, mass_planet, R=8.3):
+    def __init__(self, num_shells, gamma_a, r_0, P_0, T_0, m_a, gamma, mass_planet, R=8.314):
         num_shells += 1
+        self.R = R
         rho_0 = P_0 * m_a / (T_0 * R)  # ideal gas
         self.system = setup.System(num_shells=num_shells, gamma_a=gamma_a, mass_planet=mass_planet, r_0=r_0,
                                    rho_0=rho_0,
@@ -31,16 +28,15 @@ class LagrangianSolver1D:
         self.grid = self.system.grid
         self.time = 0
         self.dt = 0.001 / (r_0 / self.system.c_s_0)
+        self.output_count = 0
         self.gamma = gamma
         self.q_coeff = 0.75
         self.num_shells = num_shells
         self.mass_planet = mass_planet
         self.lambda_0 = self.system.lambda_0
-        self.fname = "lagrangian_solver.csv"
-        if self.fname in os.listdir(os.getcwd()):
-            os.remove(self.fname)
-        self.outfile = open(self.fname, 'w')
-        self.outfile.write("time,mass_loss\n")
+        self.outfile_dir = "outputs"
+        if self.outfile_dir in os.listdir(os.getcwd()):
+            shutil.rmtree(self.outfile_dir)
 
     def solve(self, timesteps):
         for i in range(0, timesteps):
@@ -59,14 +55,26 @@ class LagrangianSolver1D:
                                                          radius_tplus=p.radius,
                                                          radius_tplus_forward=grid_copy[
                                                              index + 1].radius)
+            for index, p in enumerate(grid_copy):
+                p.temperature = self.temperature(pressure_tplus=grid_copy[index].pressure,
+                                                 density_tplus=grid_copy[index].density)
             grid_copy[-1].pressure = 0.0
             grid_copy[-1].density = 0.0
-            self.mass_loss(timestep=i, timestep_separator=100)
+            if i % 100 == 0:
+                mass_loss = self.mass_loss()
+                output.write_state(
+                    path=self.outfile_dir,
+                    system=self.system,
+                    fname=self.output_count,
+                    time=self.time,
+                    timestep=i,
+                    grid=self.grid,
+                    mass_fraction_loss=mass_loss,
+                )
+                self.output_count += 1
             self.grid = grid_copy
-            # self.plot_timestep(timestep=i, plot_separation=3000)
             self.time += self.dt
             self.__cfl_dt()
-        self.outfile.close()
         print("Finished!")
 
     def __time_dimensional(self):
@@ -90,15 +98,14 @@ class LagrangianSolver1D:
             else:
                 self.grid[index].q = 0.0
 
-    def mass_loss(self, timestep, timestep_separator=100):
-        if timestep % timestep_separator == 0:
-            for p in self.grid:
-                criterion = (p.velocity * self.system.c_s_0) / sqrt(
-                    ((2.0 * self.system.G * self.mass_planet) / (self.system.r_0 * p.radius)))
-                if criterion > 1:
-                    mass_loss = 1.0 - (p.mass / self.grid[-1].mass)
-                    self.outfile.write("{},{}\n".format(self.__time_dimensional(), mass_loss))
-                    break  # only get the lowest radial index
+    def mass_loss(self):
+        for p in self.grid:
+            criterion = (p.velocity * self.system.c_s_0) / sqrt(
+                ((2.0 * self.system.G * self.mass_planet) / (self.system.r_0 * p.radius)))
+            if criterion > 1:
+                mass_loss = 1.0 - (p.mass / self.grid[-1].mass)
+                return mass_loss
+        return 0.0
 
     def velocity(self, index):
         p = self.grid[index]
@@ -149,6 +156,9 @@ class LagrangianSolver1D:
         a1 = (3 / (4 * pi))
         a2 = (self.grid[index + 1].mass - p.mass) / ((radius_tplus_forward ** 3) - (radius_tplus ** 3))
         return a1 * a2
+
+    def temperature(self, pressure_tplus, density_tplus):
+        return (pressure_tplus / density_tplus) * self.system.m_a / self.R
 
     def plot_timestep(self, timestep, plot_separation=100, show=True):
         if timestep % plot_separation != 0:
