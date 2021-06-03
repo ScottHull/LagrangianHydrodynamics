@@ -34,9 +34,10 @@ class LagrangianSolver1D:
         self.num_shells = num_shells
         self.mass_planet = mass_planet
         self.lambda_0 = self.system.lambda_0
-        self.outfile_dir = "outputs"
+        self.outfile_dir = "/scratch/shull4/outputs"
         if self.outfile_dir in os.listdir(os.getcwd()):
             shutil.rmtree(self.outfile_dir)
+        os.mkdir(self.outfile_dir)
 
     def solve(self, timesteps):
         for i in range(0, timesteps):
