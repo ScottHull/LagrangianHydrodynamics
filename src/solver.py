@@ -55,9 +55,8 @@ class LagrangianSolver1D:
                                                          radius_tplus=p.radius,
                                                          radius_tplus_forward=grid_copy[
                                                              index + 1].radius)
-            for index, p in enumerate(grid_copy):
-                p.temperature = self.temperature(pressure_tplus=grid_copy[index].pressure,
-                                                 density_tplus=grid_copy[index].density)
+                    p.temperature = self.temperature(pressure_tplus=p.pressure,
+                                                     density_tplus=p.density)
             grid_copy[-1].pressure = 0.0
             grid_copy[-1].density = 0.0
             if i % 100 == 0:
