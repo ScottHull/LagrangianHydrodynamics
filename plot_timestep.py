@@ -32,7 +32,7 @@ plot.plot_time(
     ax_pressure=ax_pressure,
     ax_velocity=ax_velocity,
     ax_temperature=ax_temperature,
-    r_0=r0,
+    r_0=r_0,
     rho_0=rho_0,
     P_0=r_0,
     c_s_0=c_s_0,
