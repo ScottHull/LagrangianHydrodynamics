@@ -1,6 +1,19 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
+def __get_coord_of_max_value(radius, vals):
+    max_val = max(vals)
+    index = vals.index(max_val)
+    r = radius[index]
+    return r, max_val
+
+def annotate(ax, time, radius, vals):
+    r, m = __get_coord_of_max_value(radius=radius, vals=vals)
+    ax.text(
+        (r, m + (m * 0.05)),
+        "t = {} s".format(time),
+        rotation=90
+    )
 
 def plot_time(output_path, iteration, fig, ax_density, ax_pressure, ax_velocity, ax_temperature, r_0, rho_0, P_0, c_s_0,
               T_0, fig_path):
@@ -8,8 +21,9 @@ def plot_time(output_path, iteration, fig, ax_density, ax_pressure, ax_velocity,
     time = None
     mass_loss_fraction = None
     with open(f, 'r') as infile:
-        time = next(infile)[0]
-        mass_loss_fraction = next(next(infile))[0]
+        time = next(infile)
+        timestep = next(infile)
+        mass_loss_fraction = next(infile)
 
     df = pd.read_csv(f, skiprows=3, header=None)
     radius, mass, pressure, density, velocity, temperature = df[1], df[2], df[3], df[4], df[5], df[6]
@@ -21,28 +35,32 @@ def plot_time(output_path, iteration, fig, ax_density, ax_pressure, ax_velocity,
     # ax_temperature = fig.add_subplot(224)
 
     norm_radius = [i / r_0 for i in radius]
+    norm_density = [i / rho_0 for i in density]
+    norm_pressure = [i / P_0 for i in pressure]
+    norm_velocity = [i / c_s_0 for i in velocity]
+    norm_temperature = [i / T_0 for i in temperature]
 
     ax_density.plot(
         norm_radius,
-        [i / rho_0 for i in density],
+        norm_density,
         linewidth=2.0,
         color='black'
     )
     ax_pressure.plot(
         norm_radius,
-        [i / P_0 for i in pressure],
+        norm_pressure,
         linewidth=2.0,
         color='black'
     )
     ax_velocity.plot(
         norm_radius,
-        [i / c_s_0 for i in velocity],
+        norm_velocity,
         linewidth=2.0,
         color='black'
     )
     ax_temperature.plot(
         norm_radius,
-        [i / T_0 for i in temperature],
+        norm_temperature,
         linewidth=2.0,
         color='black'
     )
@@ -51,12 +69,17 @@ def plot_time(output_path, iteration, fig, ax_density, ax_pressure, ax_velocity,
     ax_velocity.set_ylabel("$v / v_{0}$")
     ax_temperature.set_ylabel("$T / T_{0}$")
 
+    annotate(ax=ax_density, time=time, radius=radius, vals=density)
+    annotate(ax=ax_pressure, time=time, radius=radius, vals=pressure)
+    annotate(ax=ax_velocity, time=time, radius=radius, vals=velocity)
+    annotate(ax=ax_temperature, time=time, radius=radius, vals=temperature)
+
     ax_density.grid()
     ax_pressure.grid()
     ax_velocity.grid()
     ax_temperature.grid()
 
     fig.supxlabel("$r / r_{0}$")
-    fig.suptitle("Time {} s".format(time))
+    # fig.suptitle("Time {} s".format(time))
 
     plt.savefig(fig_path + "/{}.png".format(time), format='png')
