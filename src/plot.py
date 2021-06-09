@@ -82,4 +82,4 @@ def plot_time(output_path, iteration, fig, ax_density, ax_pressure, ax_velocity,
     fig.supxlabel("$r / r_{0}$")
     # fig.suptitle("Time {} s".format(time))
 
-    plt.savefig(fig_path + "/{}.png".format(time), format='png')
+    # plt.savefig(fig_path + "/{}.png".format(time), format='png')

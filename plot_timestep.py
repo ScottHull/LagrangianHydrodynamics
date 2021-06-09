@@ -40,3 +40,6 @@ for i in iterations_to_plot:
         T_0=T_0,
         fig_path=fig_path
     )
+
+plt.savefig("lagrangian.png", format='png')
+
