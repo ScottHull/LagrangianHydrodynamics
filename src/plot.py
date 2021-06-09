@@ -67,7 +67,7 @@ def plot_time(output_path, iteration, fig, ax_density, ax_pressure, ax_velocity,
     )
     ax_density.set_ylabel("$ρ / ρ_{0}$")
     ax_pressure.set_ylabel("$P / P_{0}$")
-    ax_velocity.set_ylabel("$v / v_{0}$")
+    ax_velocity.set_ylabel("$v / v_{esc}$")
     ax_temperature.set_ylabel("$T / T_{0}$")
 
     annotate(ax=ax_density, time=time, radius=norm_radius, vals=norm_density)
@@ -80,7 +80,7 @@ def plot_time(output_path, iteration, fig, ax_density, ax_pressure, ax_velocity,
     ax_velocity.grid()
     ax_temperature.grid()
 
-    fig.supxlabel("$r / r_{0}$")
+    fig.supxlabel("$r / r_{esc}$")
     # fig.suptitle("Time {} s".format(time))
 
     # plt.savefig(fig_path + "/{}.png".format(time), format='png')
