@@ -1,5 +1,6 @@
 import csv
 
+
 def write_state(path, fname, time, timestep, grid, mass_fraction_loss, system):
     with open(path + "/{}.csv".format(fname), 'w') as outfile:
         outfile.write("{}\n{}\n{}\n".format(time, timestep, mass_fraction_loss))

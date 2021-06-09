@@ -60,7 +60,7 @@ class LagrangianSolver1D:
                                                      density_tplus=p.density)
             grid_copy[-1].pressure = 0.0
             grid_copy[-1].density = 0.0
-            if i % 100 == 0:
+            if i % 1000 == 0:
                 mass_loss = self.mass_loss()
                 output.write_state(
                     path=self.outfile_dir,
