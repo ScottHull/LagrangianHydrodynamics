@@ -10,12 +10,13 @@ def __get_coord_of_max_value(radius, vals):
 def annotate(ax, time, radius, vals):
     r, m = __get_coord_of_max_value(radius=radius, vals=vals)
     ax.text(
-        (r, m + (m * 0.05)),
-        "t = {} s".format(time),
+        r,
+        m + (m * 0.05),
+        "t = {} s".format(round(float(time), 4)),
         rotation=90
     )
 
-def plot_time(output_path, iteration, fig, ax_density, ax_pressure, ax_velocity, ax_temperature, r_0, rho_0, P_0, c_s_0,
+def plot_time(output_path, iteration, fig, ax_density, ax_pressure, ax_velocity, ax_temperature, r_0, rho_0, P_0, vesc,
               T_0, fig_path):
     f = output_path + "/{}.csv".format(iteration)
     time = None
@@ -37,7 +38,7 @@ def plot_time(output_path, iteration, fig, ax_density, ax_pressure, ax_velocity,
     norm_radius = [i / r_0 for i in radius]
     norm_density = [i / rho_0 for i in density]
     norm_pressure = [i / P_0 for i in pressure]
-    norm_velocity = [i / c_s_0 for i in velocity]
+    norm_velocity = [i / vesc for i in velocity]
     norm_temperature = [i / T_0 for i in temperature]
 
     ax_density.plot(

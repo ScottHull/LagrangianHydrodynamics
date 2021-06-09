@@ -13,6 +13,7 @@ T_0 = 288
 P_0 = 1.01e5
 rho_0 = 1.223254617378986
 c_s_0 = 339.99010127578305
+vesc = 11160.421945428408
 
 if os.path.exists(fig_path):
     shutil.rmtree(fig_path)
@@ -36,7 +37,7 @@ for i in iterations_to_plot:
         r_0=r_0,
         rho_0=rho_0,
         P_0=r_0,
-        c_s_0=c_s_0,
+        vesc=vesc,
         T_0=T_0,
         fig_path=fig_path
     )

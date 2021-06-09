@@ -23,5 +23,5 @@ s = solver.LagrangianSolver1D(
     r_0=r_0,
     mass_planet=mass_planet,
 )
-print(s.system.rho_0, s.system.c_s_0)
+print(s.system.rho_0, s.system.c_s_0, s.system.vesc)
 s.solve(timesteps=int(5e6))
