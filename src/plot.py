@@ -69,10 +69,10 @@ def plot_time(output_path, iteration, fig, ax_density, ax_pressure, ax_velocity,
     ax_velocity.set_ylabel("$v / v_{0}$")
     ax_temperature.set_ylabel("$T / T_{0}$")
 
-    annotate(ax=ax_density, time=time, radius=radius, vals=density)
-    annotate(ax=ax_pressure, time=time, radius=radius, vals=pressure)
-    annotate(ax=ax_velocity, time=time, radius=radius, vals=velocity)
-    annotate(ax=ax_temperature, time=time, radius=radius, vals=temperature)
+    annotate(ax=ax_density, time=time, radius=norm_radius, vals=norm_density)
+    annotate(ax=ax_pressure, time=time, radius=norm_radius, vals=norm_pressure)
+    annotate(ax=ax_velocity, time=time, radius=norm_radius, vals=norm_velocity)
+    annotate(ax=ax_temperature, time=time, radius=norm_radius, vals=norm_temperature)
 
     ax_density.grid()
     ax_pressure.grid()
