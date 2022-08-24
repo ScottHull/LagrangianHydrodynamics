@@ -81,7 +81,9 @@ class LagrangianSolver1D:
         return self.time * (self.system.r_0 / self.system.c_s_0)
 
     def __cfl_dt(self):
-        dt = self.dt
+        # dt = self.dt
+        self.dt = 0.001 / (self.system.r_0 / self.system.c_s_0)
+        dt = copy(self.dt)
         for i in range(0, self.num_shells - 1):
             criterion = (self.grid[i + 1].radius - self.grid[i].radius) / self.grid[i].velocity
             if dt > criterion:
