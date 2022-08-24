@@ -18,7 +18,7 @@ class Point:
 
 class System:
 
-    def __init__(self, num_shells, gamma_a, mass_planet, r_0, rho_0, P_0, T_0, m_a, gamma):
+    def __init__(self, num_shells, gamma_a, mass_planet, r_0, rho_0, P_0, T_0, m_a, gamma, u_s):
         self.num_shells = num_shells
         self.G = 6.67408e-11
 
@@ -33,6 +33,9 @@ class System:
         self.vesc = sqrt(2 * self.G * self.mass_planet / self.r_0)
         self.lambda_0 = self.G * self.mass_planet * self.rho_0 / (self.r_0 * self.P_0)
         self.c_s_0 = sqrt(gamma_a * self.P_0 / self.rho_0)
+        self.u_s = u_s  # initial shock velocity, is 0.5 * u_esc in Genda and Abe 2003
+        if self.u_s is None:
+            self.u_s = 0.5 * self.vesc  # is 0.5 * u_esc in Genda and Abe 2003
 
         self.grid = []
         self.__setup_grid()
@@ -71,7 +74,8 @@ class System:
             current += 1
         self.grid[-1].pressure = 0.0
         self.grid[-1].density = 0.0
-        self.grid[0].velocity = 0.5 * self.vesc
+        # self.grid[0].velocity = 0.5 * self.vesc
+        self.grid[0].velocity = self.u_s
 
     def __nondimensionalize_initial(self):
         for p in self.grid:

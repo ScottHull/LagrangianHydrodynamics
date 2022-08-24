@@ -1,11 +1,13 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
+
 def __get_coord_of_max_value(radius, vals):
     max_val = max(vals)
     index = vals.index(max_val)
     r = radius[index]
     return r, max_val
+
 
 def annotate(ax, time, radius, vals):
     r, m = __get_coord_of_max_value(radius=radius, vals=vals)
@@ -15,6 +17,7 @@ def annotate(ax, time, radius, vals):
         "t = {} s".format(round(float(time), 4)),
         rotation=90
     )
+
 
 def plot_time(output_path, iteration, fig, ax_density, ax_pressure, ax_velocity, ax_temperature, r_0, rho_0, P_0, vesc,
               T_0, fig_path):

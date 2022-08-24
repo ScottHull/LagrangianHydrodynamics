@@ -18,13 +18,14 @@ class LagrangianSolver1D:
     p is the pressure.
     """
 
-    def __init__(self, num_shells, gamma_a, r_0, P_0, T_0, m_a, gamma, mass_planet, R=8.314):
+    def __init__(self, num_shells, gamma_a, r_0, P_0, T_0, m_a, gamma, mass_planet, u_s, R=8.314,
+                 outfile_dir="/scratch/shull4/outputs",):
         num_shells += 1
         self.R = R
         rho_0 = P_0 * m_a / (T_0 * R)  # ideal gas
         self.system = setup.System(num_shells=num_shells, gamma_a=gamma_a, mass_planet=mass_planet, r_0=r_0,
                                    rho_0=rho_0,
-                                   P_0=P_0, T_0=T_0, m_a=m_a, gamma=gamma)
+                                   P_0=P_0, T_0=T_0, m_a=m_a, gamma=gamma, u_s=u_s)
         self.grid = self.system.grid
         self.time = 0
         self.dt = 0.001 / (r_0 / self.system.c_s_0)
@@ -34,7 +35,7 @@ class LagrangianSolver1D:
         self.num_shells = num_shells
         self.mass_planet = mass_planet
         self.lambda_0 = self.system.lambda_0
-        self.outfile_dir = "/scratch/shull4/outputs"
+        self.outfile_dir = outfile_dir
         if self.outfile_dir in os.listdir(os.getcwd()):
             shutil.rmtree(self.outfile_dir)
         os.mkdir(self.outfile_dir)
@@ -61,7 +62,7 @@ class LagrangianSolver1D:
             grid_copy[-1].pressure = 0.0
             grid_copy[-1].density = 0.0
             if i % 1000 == 0:
-                mass_loss = self.mass_loss()
+                mass_loss = self.mass_loss()  # assess atmospheric mass loss
                 output.write_state(
                     path=self.outfile_dir,
                     system=self.system,
@@ -70,8 +71,8 @@ class LagrangianSolver1D:
                     timestep=i,
                     grid=self.grid,
                     mass_fraction_loss=mass_loss,
-                )
-                self.output_count += 1
+                )  # write output files
+                self.output_count += 1  # increment output count
             self.grid = grid_copy
             self.time += self.dt
             self.__cfl_dt()
@@ -81,6 +82,9 @@ class LagrangianSolver1D:
         return self.time * (self.system.r_0 / self.system.c_s_0)
 
     def __cfl_dt(self):
+        """
+        Adjust timestep to satisfy CFL condition.
+        """
         # dt = self.dt
         self.dt = 0.001 / (self.system.r_0 / self.system.c_s_0)
         dt = copy(self.dt)
@@ -92,6 +96,7 @@ class LagrangianSolver1D:
 
     def __solve_q(self, grid_copy):
         """
+        Numerical viscosity.
         Note: this solves for index i-1/2 and i+1/2, but we will store at integer indices.
         """
         for index in range(0, self.num_shells - 1):
