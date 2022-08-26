@@ -7,12 +7,12 @@ def write_state(path, fname, time, timestep, grid, mass_fraction_loss, system):
         for p in grid:
             line = "{},{},{},{},{},{},{}\n".format(
                 p.id,
-                p.radius * system.r_0,
-                p.mass * (system.r_0 ** 3 * system.rho_0),
-                p.pressure * system.P_0,
-                p.density * system.rho_0,
-                p.velocity * system.c_s_0,
-                p.temperature * system.T_0
+                round(p.radius * system.r_0, 4),
+                round(p.mass * (system.r_0 ** 3 * system.rho_0), 4),
+                round(p.pressure * system.P_0, 4),
+                round(p.density * system.rho_0, 4),
+                round(p.velocity * system.c_s_0, 4),
+                round(p.temperature * system.T_0, 4)
             )
             outfile.write(line)
     outfile.close()

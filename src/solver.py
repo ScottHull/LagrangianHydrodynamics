@@ -19,7 +19,7 @@ class LagrangianSolver1D:
     """
 
     def __init__(self, num_shells, gamma_a, r_0, P_0, T_0, m_a, gamma, mass_planet, u_s, R=8.314,
-                 outfile_dir="/scratch/shull4/outputs",):
+                 outfile_dir="/scratch/shull4/outputs", use_cfl=True):
         num_shells += 1
         self.R = R
         rho_0 = P_0 * m_a / (T_0 * R)  # ideal gas
@@ -29,6 +29,7 @@ class LagrangianSolver1D:
         self.grid = self.system.grid
         self.time = 0
         self.dt = 0.001 / (r_0 / self.system.c_s_0)
+        self.dt_0 = copy(self.dt)
         self.output_count = 0
         self.gamma = gamma
         self.q_coeff = 0.75
@@ -36,11 +37,12 @@ class LagrangianSolver1D:
         self.mass_planet = mass_planet
         self.lambda_0 = self.system.lambda_0
         self.outfile_dir = outfile_dir
+        self.__use_cfl = use_cfl
         if self.outfile_dir in os.listdir(os.getcwd()):
             shutil.rmtree(self.outfile_dir)
         os.mkdir(self.outfile_dir)
 
-    def solve(self, timesteps):
+    def solve(self, timesteps, output_interval=1000):
         for i in range(0, timesteps):
             print("At time {} ({}/{} steps)".format(self.__time_dimensional(), i, timesteps))
             grid_copy = copy(self.grid)
@@ -61,7 +63,7 @@ class LagrangianSolver1D:
                                                      density_tplus=p.density)
             grid_copy[-1].pressure = 0.0
             grid_copy[-1].density = 0.0
-            if i % 1000 == 0:
+            if i % output_interval == 0:
                 mass_loss = self.mass_loss()  # assess atmospheric mass loss
                 output.write_state(
                     path=self.outfile_dir,
@@ -85,14 +87,20 @@ class LagrangianSolver1D:
         """
         Adjust timestep to satisfy CFL condition.
         """
+        if not self.__use_cfl:
+            self.dt = self.dt_0
+            return self.dt
         # dt = self.dt
-        self.dt = 0.001 / (self.system.r_0 / self.system.c_s_0)
+        # self.dt = 0.001 / (self.system.r_0 / self.system.c_s_0)
+        self.dt = copy(self.dt_0)
         dt = copy(self.dt)
         for i in range(0, self.num_shells - 1):
             criterion = (self.grid[i + 1].radius - self.grid[i].radius) / self.grid[i].velocity
             if dt > criterion:
-                dt = 0.25 * ((self.grid[i + 1].radius - self.grid[i].radius) / self.grid[i].velocity)
+                # dt = 0.25 * ((self.grid[i + 1].radius - self.grid[i].radius) / self.grid[i].velocity)
+                dt = 0.25 * criterion
         self.dt = dt
+        return self.dt
 
     def __solve_q(self, grid_copy):
         """
@@ -106,6 +114,9 @@ class LagrangianSolver1D:
                 self.grid[index].q = 0.0
 
     def mass_loss(self):
+        """
+        Returns the mass fraction of the atmosphere lost from the planet.
+        """
         for p in self.grid:
             criterion = (p.velocity * self.system.c_s_0) / sqrt(
                 ((2.0 * self.system.G * self.mass_planet) / (self.system.r_0 * p.radius)))
@@ -115,6 +126,9 @@ class LagrangianSolver1D:
         return 0.0
 
     def velocity(self, index):
+        """
+        Returns the gridded velocity of the atmosphere at a given grid index.
+        """
         p = self.grid[index]
         if index == 0:
             return self.grid[index].velocity - (self.lambda_0 / self.gamma / (self.grid[index].radius ** 2)) * self.dt
@@ -131,6 +145,9 @@ class LagrangianSolver1D:
         #     return self.grid[index].velocity
 
     def pressure(self, index):
+        """
+        Returns the pressure of the atmosphere at a given grid index.
+        """
         p = self.grid[index]
         a1 = 4 * pi * p.density
         a2 = (self.gamma * p.pressure) + ((self.gamma - 1) * self.grid[index].q)
@@ -140,6 +157,9 @@ class LagrangianSolver1D:
         return p.pressure - ((a1 * a2 * a3) * self.dt)
 
     def numerical_viscosity_mid_forward(self, index):
+        """
+        Forward finite difference for the numerical viscosity.
+        """
         p = self.grid[index]
         if index < len(self.grid) - 1:
             if (self.grid[index + 1].velocity - p.velocity) < 0:
@@ -152,11 +172,15 @@ class LagrangianSolver1D:
         return 0
 
     def radius(self, index, velocity_tplus):
+        """
+        Calculates the radial extent of the atmosphere at a given grid index.
+        """
         p = self.grid[index]
         return p.radius + (velocity_tplus * self.dt)
 
     def density_mid_forward(self, index, radius_tplus_forward, radius_tplus):
         """
+        The forward finite difference for the density.
         Note: this solves for index i-1/2 and i+1/2, but we will store at integer indices.
         """
         p = self.grid[index]
@@ -165,6 +189,9 @@ class LagrangianSolver1D:
         return a1 * a2
 
     def temperature(self, pressure_tplus, density_tplus):
+        """
+        Calculates the temperature of the atmosphere at a given grid index.
+        """
         return (pressure_tplus / density_tplus) * self.system.m_a / self.R
 
     def plot_timestep(self, timestep, plot_separation=100, show=True):

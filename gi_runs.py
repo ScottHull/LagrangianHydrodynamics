@@ -42,6 +42,7 @@ gamma = 1.4  # specific heat
 M_a = 0.029  # kg/mol  # molecule mass, will likely have to be heavier for BSE atmosphere
 T_0 = 288  # K, initial temperature (surface temperature)
 P_0 = 1.01e5  # Pa, initial pressure (sea level)
+u_s = None  # defaults to 0.5 * u_esc in Genda and Abe 2003
 
 s = solver.LagrangianSolver1D(
     num_shells=num_shells,
@@ -52,6 +53,7 @@ s = solver.LagrangianSolver1D(
     m_a=M_a,
     r_0=r_0,
     mass_planet=mass_planet,
+    u_s=u_s,
 )
 print(s.system.rho_0, s.system.c_s_0, s.system.vesc)
-s.solve(timesteps=int(5e6))
+s.solve(timesteps=int(5e6), output_interval=5000)
