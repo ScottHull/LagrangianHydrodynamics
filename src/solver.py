@@ -7,13 +7,13 @@ import matplotlib.pyplot as plt
 from src import setup, output
 
 
-class LagrangianSolver1D:
+class LagrangianSolver1DSpherical:
     """
     1D Lagragian differential equation solver.
     Based on Richtmyer and Morton 1967 as described by Genda and Abe 2003 Appendix A.
     https://www.sciencedirect.com/science/article/pii/S0019103503001015
 
-    m is the mass constained within radius r and is the comoving coordinate.
+    m is the mass contained within radius r and is the co-moving coordinate.
     u is the velocity.
     p is the pressure.
     """
@@ -31,8 +31,8 @@ class LagrangianSolver1D:
         self.dt = 0.001 / (r_0 / self.system.c_s_0)
         self.dt_0 = copy(self.dt)
         self.output_count = 0
-        self.gamma = gamma
-        self.q_coeff = 0.75
+        self.gamma = gamma  # escape parameter, related to the ratio of gravidational energy required for escape from the planet and the thermal energy of the atmosphere
+        self.q_coeff = 0.75  # numerical viscosity coefficient
         self.num_shells = num_shells
         self.mass_planet = mass_planet
         self.lambda_0 = self.system.lambda_0
@@ -254,3 +254,9 @@ class LagrangianSolver1D:
 
         if show:
             plt.show()
+
+class LagrangianSolver2DJet(LagrangianSolver1DSpherical):
+    """
+    Solves for a jet in 2D.
+    """
+    pass
