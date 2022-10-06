@@ -1,6 +1,6 @@
 import os
 import shutil
-from math import pi, sqrt
+from math import pi, sqrt, tan
 from copy import copy
 import matplotlib.pyplot as plt
 
@@ -116,6 +116,8 @@ class LagrangianSolver1DSpherical:
     def mass_loss(self):
         """
         Returns the mass fraction of the atmosphere lost from the planet.
+        The criterion is that the atmosphere must be moving faster than the escape velocity.
+        criterion = (u * c_s) / sqrt(2 * G * M_planet) / (r_0 * r)
         """
         for p in self.grid:
             criterion = (p.velocity * self.system.c_s_0) / sqrt(
@@ -255,8 +257,58 @@ class LagrangianSolver1DSpherical:
         if show:
             plt.show()
 
-class LagrangianSolver2DJet(LagrangianSolver1DSpherical):
+class LagrangianSolverJet(LagrangianSolver1DSpherical):
     """
-    Solves for a jet in 2D.
+    Solves for a jet as modelled by a basic cone.
     """
-    pass
+
+    def __init__(self, **kwargs):
+        super(LagrangianSolverJet, self).__init__(**kwargs)
+        self.theta = kwargs.get('theta', 45.0)  # expansion angle of the jet in degrees
+
+    def degrees_to_radians(self, degrees):
+        """
+        Converts degrees to radians.
+        """
+        return degrees * (pi / 180)
+
+    def velocity(self, index):
+        p = self.grid[index]
+        if index == 0:
+            return self.grid[index].velocity - (self.lambda_0 / self.gamma / (self.grid[index].radius ** 2)) * self.dt
+        elif index < len(self.grid) - 1:
+            m_forward = self.grid[index + 1].mass
+            m_backwards = self.grid[index - 1].mass
+            a1 = 2 * (pi / self.gamma)
+            a2 = p.radius ** 2
+            a3 = (p.pressure - self.grid[index - 1].pressure + p.q - self.grid[
+                index - 1].q) / (m_forward - m_backwards)
+            a4 = (self.lambda_0 / (self.gamma * (p.radius ** 2)))
+            return p.velocity - (((a1 * a2 * a3) + a4) * self.dt)
+
+    def pressure(self, index):
+        p = self.grid[index]
+        a1 = pi * p.density * tan(self.degrees_to_radians(self.theta))
+        a2 = (self.gamma * p.pressure) + ((self.gamma - 1) * self.grid[index].q)
+        a3 = (((self.grid[index + 1].radius ** 2) * self.grid[index + 1].velocity) - (
+                (p.radius ** 2) * p.velocity)) / (
+                     self.grid[index + 1].mass - p.mass)
+        return p.pressure - ((a1 * a2 * a3) * self.dt)
+
+    def radius(self, index, velocity_tplus):
+        """
+        Calculates the radial extent of the atmosphere at a given grid index.
+        This is "z" in documentations, or the cone's height.
+        """
+        p = self.grid[index]
+        return p.radius + (velocity_tplus * self.dt)
+
+    def density_mid_forward(self, index, radius_tplus_forward, radius_tplus):
+        """
+        The forward finite difference for the density.
+        Note: this solves for index i-1/2 and i+1/2, but we will store at integer indices.
+        """
+        p = self.grid[index]
+        a1 = 3 / (pi * tan(self.degrees_to_radians(self.theta)))
+        a2 = (self.grid[index + 1].mass - p.mass) / ((radius_tplus_forward ** 3) - (radius_tplus ** 3))
+        return a1 * a2
