@@ -15,7 +15,7 @@ P_0 = 1.01e5  # Pa, initial pressure (sea level)
 u_s = None  # defaults to 0.5 * u_esc in Genda and Abe 2003
 outfile_dir = "test_outputs"
 
-s = solver.LagrangianSolver1D(
+s = solver.LagrangianSolver1DSpherical(
     num_shells=num_shells,
     P_0=P_0,
     T_0=T_0,
