@@ -23,7 +23,7 @@ class LagrangianSolver1DSpherical:
         num_shells += 1
         self.R = R
         rho_0 = P_0 * m_a / (T_0 * R)  # ideal gas
-        self.system = setup.System(num_shells=num_shells, gamma_a=gamma_a, mass_planet=mass_planet, r_0=r_0,
+        self.system = setup.SphericalSystem(num_shells=num_shells, gamma_a=gamma_a, mass_planet=mass_planet, r_0=r_0,
                                    rho_0=rho_0,
                                    P_0=P_0, T_0=T_0, m_a=m_a, gamma=gamma, u_s=u_s)
         self.grid = self.system.grid
@@ -264,6 +264,10 @@ class LagrangianSolverJet(LagrangianSolver1DSpherical):
 
     def __init__(self, **kwargs):
         super(LagrangianSolverJet, self).__init__(**kwargs)
+        self.system = setup.SphericalSystem(num_shells=kwargs.get('num_shells'), gamma_a=kwargs.get('gamma_a'),
+                                            mass_planet=kwargs.get('mass_planet'), r_0=kwargs.get('r_0'),
+                                            rho_0=kwargs.get('rho_0'), P_0=kwargs.get('P_0'), T_0=kwargs.get('T_0'),
+                                            m_a=kwargs.get('m_a'), gamma=kwargs.get('gamma'), u_s=kwargs.get('u_s'))
         self.theta = kwargs.get('theta', 45.0)  # expansion angle of the jet in degrees
 
     def degrees_to_radians(self, degrees):

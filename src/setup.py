@@ -16,7 +16,7 @@ class Point:
         self.velocity = velocity
 
 
-class System:
+class SphericalSystem:
 
     def __init__(self, num_shells, gamma_a, mass_planet, r_0, rho_0, P_0, T_0, m_a, gamma, u_s):
         self.num_shells = num_shells
@@ -43,22 +43,23 @@ class System:
 
     def __setup_grid(self):
         current = 0
+        s = ic.InitialConditionsSpherical()
 
         while current < self.num_shells:
-            r = ic.radius_initial(index=current, lambda_0=self.lambda_0, polytropic_exponent=self.gamma_a, r_0=self.r_0,
+            r = s.radius_initial(index=current, lambda_0=self.lambda_0, polytropic_exponent=self.gamma_a, r_0=self.r_0,
                                   total_shells=self.num_shells)
-            P = ic.pressure_initial(polytropic_exponent=self.gamma_a, lambda_0=self.lambda_0, p_0=self.P_0, radius=r,
+            P = s.pressure_initial(polytropic_exponent=self.gamma_a, lambda_0=self.lambda_0, p_0=self.P_0, radius=r,
                                     radius_0=self.r_0)
-            T = ic.temperature_initial(polytropic_exponent=self.gamma_a, lambda_0=self.lambda_0, T_0=self.T_0, radius=r,
+            T = s.temperature_initial(polytropic_exponent=self.gamma_a, lambda_0=self.lambda_0, T_0=self.T_0, radius=r,
                                        radius_0=self.r_0)
-            rho = ic.density_initial(polytropic_exponent=self.gamma_a, lambda_0=self.lambda_0, rho_0=self.rho_0,
+            rho = s.density_initial(polytropic_exponent=self.gamma_a, lambda_0=self.lambda_0, rho_0=self.rho_0,
                                      radius=r, radius_0=self.r_0)
             if current > 0:
-                m = ic.mass_initial(mass_last_index=self.grid[current - 1].mass, r_index=r,
+                m = s.mass_initial(mass_last_index=self.grid[current - 1].mass, r_index=r,
                                     r_last_index=self.grid[current - 1].radius, rho_index=rho)
             else:
                 m = 0
-            v = ic.velocity_initial(polytropic_exponent=self.gamma_a, T_index=T, m_a=self.m_a)
+            v = s.velocity_initial(polytropic_exponent=self.gamma_a, T_index=T, m_a=self.m_a)
             q = 0
             point = Point(
                 id=current,
