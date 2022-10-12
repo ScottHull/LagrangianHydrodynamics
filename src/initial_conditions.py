@@ -59,11 +59,14 @@ class InitialConditionsSpherical:
 
 class InitialConditionsJet(InitialConditionsSpherical):
 
+    def __init__(self, **kwargs):
+        super(InitialConditionsJet, self).__init__(**kwargs)
+        self.jet_angle = kwargs.get("jet_angle", 45.0)
+
     def mass_initial(self, mass_last_index, rho_index, r_last_index, r_index):
         """
-        Volume of a cone: V = (1/3) * pi * r^2 * z
-        where z is the height of the cone and r is the radius of the base.
-        Therefore, the
+        We model the volume of each shell as a thin cylinder which composes the cone.
         """
         # print(mass_last_index, rho_index, r_last_index, r_index)
-        return mass_last_index + (rho_index * (4 / 3) * pi * ((r_index ** 3) - (r_last_index ** 3)))
+        vol = pi * r_index ** 2 * tan(self.jet_angle) ** 2 * (r_index - r_last_index)  # volume of cylindar shell
+        return mass_last_index + (rho_index * vol)
