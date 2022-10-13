@@ -1,4 +1,5 @@
 import os
+import sys
 import shutil
 from math import pi, sqrt, tan
 from copy import copy
@@ -19,13 +20,13 @@ class LagrangianSolver1DSpherical:
     """
 
     def __init__(self, num_shells, gamma_a, r_0, P_0, T_0, m_a, gamma, mass_planet, u_s, R=8.314,
-                 outfile_dir="/scratch/shull4/outputs", use_cfl=True):
+                 outfile_dir="/scratch/shull4/outputs", use_cfl=True, **kwargs):
         num_shells += 1
         self.R = R
-        rho_0 = P_0 * m_a / (T_0 * R)  # ideal gas
+        self.rho_0 = P_0 * m_a / (T_0 * R)  # ideal gas
         self.system = setup.SphericalSystem(num_shells=num_shells, gamma_a=gamma_a, mass_planet=mass_planet, r_0=r_0,
-                                   rho_0=rho_0,
-                                   P_0=P_0, T_0=T_0, m_a=m_a, gamma=gamma, u_s=u_s)
+                                            rho_0=self.rho_0,
+                                            P_0=P_0, T_0=T_0, m_a=m_a, gamma=gamma, u_s=u_s)
         self.grid = self.system.grid
         self.time = 0
         self.dt = 0.001 / (r_0 / self.system.c_s_0)
@@ -38,6 +39,7 @@ class LagrangianSolver1DSpherical:
         self.lambda_0 = self.system.lambda_0
         self.outfile_dir = outfile_dir
         self.__use_cfl = use_cfl
+        self.plot_separation = kwargs.get("plot_separation", 100)
         if self.outfile_dir in os.listdir(os.getcwd()):
             shutil.rmtree(self.outfile_dir)
         os.mkdir(self.outfile_dir)
@@ -78,6 +80,7 @@ class LagrangianSolver1DSpherical:
             self.grid = grid_copy
             self.time += self.dt
             self.__cfl_dt()
+            self.plot_timestep(timestep=i)
         print("Finished!")
 
     def __time_dimensional(self):
@@ -156,6 +159,7 @@ class LagrangianSolver1DSpherical:
         a3 = (((self.grid[index + 1].radius ** 2) * self.grid[index + 1].velocity) - (
                 (p.radius ** 2) * p.velocity)) / (
                      self.grid[index + 1].mass - p.mass)
+        print(p.pressure - ((a1 * a2 * a3) * self.dt))
         return p.pressure - ((a1 * a2 * a3) * self.dt)
 
     def numerical_viscosity_mid_forward(self, index):
@@ -196,8 +200,8 @@ class LagrangianSolver1DSpherical:
         """
         return (pressure_tplus / density_tplus) * self.system.m_a / self.R
 
-    def plot_timestep(self, timestep, plot_separation=100, show=True):
-        if timestep % plot_separation != 0:
+    def plot_timestep(self, timestep, show=True):
+        if timestep % self.plot_separation != 0:
             return None
         fig = plt.figure(figsize=(16, 9))
         ax_pressure = fig.add_subplot(221)
@@ -257,6 +261,7 @@ class LagrangianSolver1DSpherical:
         if show:
             plt.show()
 
+
 class LagrangianSolverJet(LagrangianSolver1DSpherical):
     """
     Solves for a jet as modelled by a basic cone.
@@ -264,11 +269,12 @@ class LagrangianSolverJet(LagrangianSolver1DSpherical):
 
     def __init__(self, **kwargs):
         super(LagrangianSolverJet, self).__init__(**kwargs)
-        self.system = setup.SphericalSystem(num_shells=kwargs.get('num_shells'), gamma_a=kwargs.get('gamma_a'),
-                                            mass_planet=kwargs.get('mass_planet'), r_0=kwargs.get('r_0'),
-                                            rho_0=kwargs.get('rho_0'), P_0=kwargs.get('P_0'), T_0=kwargs.get('T_0'),
-                                            m_a=kwargs.get('m_a'), gamma=kwargs.get('gamma'), u_s=kwargs.get('u_s'))
-        self.theta = kwargs.get('theta', 45.0)  # expansion angle of the jet in degrees
+        self.theta = self.degrees_to_radians(kwargs.get('jet_angle', 45.0))  # expansion angle of the jet in degrees
+        self.system = setup.JetSystem(num_shells=kwargs.get('num_shells'), gamma_a=kwargs.get('gamma_a'),
+                                      mass_planet=kwargs.get('mass_planet'), r_0=kwargs.get('r_0'),
+                                      rho_0=self.rho_0, P_0=kwargs.get('P_0'), T_0=kwargs.get('T_0'),
+                                      m_a=kwargs.get('m_a'), gamma=kwargs.get('gamma'), u_s=kwargs.get('u_s'),
+                                      jet_angle=self.theta)
 
     def degrees_to_radians(self, degrees):
         """
@@ -284,20 +290,24 @@ class LagrangianSolverJet(LagrangianSolver1DSpherical):
             m_forward = self.grid[index + 1].mass
             m_backwards = self.grid[index - 1].mass
             a1 = 2 * (pi / self.gamma)
-            a2 = p.radius ** 2
+            a2 = (p.radius ** 2) * (tan(self.theta) ** 2)
             a3 = (p.pressure - self.grid[index - 1].pressure + p.q - self.grid[
                 index - 1].q) / (m_forward - m_backwards)
             a4 = (self.lambda_0 / (self.gamma * (p.radius ** 2)))
-            return p.velocity - (((a1 * a2 * a3) + a4) * self.dt)
+            v = p.velocity - (((a1 * a2 * a3) + a4) * self.dt)
+            return v
 
     def pressure(self, index):
         p = self.grid[index]
-        a1 = pi * p.density * tan(self.degrees_to_radians(self.theta))
-        a2 = (self.gamma * p.pressure) + ((self.gamma - 1) * self.grid[index].q)
+        a1 = pi * p.density * (tan(self.theta) ** 2)
+        a2 = (self.gamma * p.pressure) + ((self.gamma - 1) * p.q)
         a3 = (((self.grid[index + 1].radius ** 2) * self.grid[index + 1].velocity) - (
                 (p.radius ** 2) * p.velocity)) / (
                      self.grid[index + 1].mass - p.mass)
-        return p.pressure - ((a1 * a2 * a3) * self.dt)
+        pres = p.pressure - ((a1 * a2 * a3) * self.dt)
+        if pres < 0:
+            print("NEG PRESSURE", p.pressure, p.radius, p.velocity)
+        return pres
 
     def radius(self, index, velocity_tplus):
         """
@@ -313,6 +323,6 @@ class LagrangianSolverJet(LagrangianSolver1DSpherical):
         Note: this solves for index i-1/2 and i+1/2, but we will store at integer indices.
         """
         p = self.grid[index]
-        a1 = 3 / (pi * tan(self.degrees_to_radians(self.theta)))
+        a1 = 1 / (pi * (radius_tplus ** 2) * (tan(self.theta) ** 2))
         a2 = (self.grid[index + 1].mass - p.mass) / ((radius_tplus_forward ** 3) - (radius_tplus ** 3))
         return a1 * a2

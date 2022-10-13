@@ -13,6 +13,7 @@ M_a = 0.029  # g/mol  # molecule mass, will likely have to be heavier for BSE at
 T_0 = 288  # K, initial temperature (surface temperature)
 P_0 = 1.01e5  # Pa, initial pressure (sea level)
 u_s = None  # defaults to 0.5 * u_esc in Genda and Abe 2003
+jet_angle = 45.0
 outfile_dir = "test_outputs"
 
 s = solver.LagrangianSolverJet(
@@ -25,7 +26,21 @@ s = solver.LagrangianSolverJet(
     r_0=r_0,
     mass_planet=mass_planet,
     u_s=u_s,
+    jet_angle=jet_angle,
     outfile_dir=outfile_dir,
+    plot_separation=1
 )
+# s = solver.LagrangianSolver1DSpherical(
+#     num_shells=num_shells,
+#     P_0=P_0,
+#     T_0=T_0,
+#     gamma=gamma,
+#     gamma_a=gamma_a,
+#     m_a=M_a,
+#     r_0=r_0,
+#     mass_planet=mass_planet,
+#     u_s=u_s,
+#     outfile_dir=outfile_dir,
+# )
 print(s.system.rho_0, s.system.c_s_0, s.system.vesc)
 s.solve(timesteps=int(5e6))

@@ -8,6 +8,9 @@ Assumes a hydrostatically equilibrated polytropic atmosphere with polytropic exp
 
 class InitialConditionsSpherical:
 
+    def __init__(self):
+        pass
+
     def lambda_0_initial(self, mass_planet, rho_0, r_0, P_0, G=6.674 * 10 ** -11):
         return (G * mass_planet * rho_0) / (r_0 * P_0)
 
@@ -60,13 +63,13 @@ class InitialConditionsSpherical:
 class InitialConditionsJet(InitialConditionsSpherical):
 
     def __init__(self, **kwargs):
-        super(InitialConditionsJet, self).__init__(**kwargs)
-        self.jet_angle = kwargs.get("jet_angle", 45.0)
+        super(InitialConditionsJet, self).__init__()
+        self.jet_angle = kwargs.get("jet_angle")
 
     def mass_initial(self, mass_last_index, rho_index, r_last_index, r_index):
         """
         We model the volume of each shell as a thin cylinder which composes the cone.
         """
         # print(mass_last_index, rho_index, r_last_index, r_index)
-        vol = pi * r_index ** 2 * tan(self.jet_angle) ** 2 * (r_index - r_last_index)  # volume of cylindar shell
+        vol = pi * (r_index ** 2) * (tan(self.jet_angle) ** 2) * (r_index - r_last_index)  # volume of cylindar shell
         return mass_last_index + (rho_index * vol)
