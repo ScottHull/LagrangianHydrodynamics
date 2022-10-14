@@ -28,7 +28,8 @@ s = solver.LagrangianSolverJet(
     u_s=u_s,
     jet_angle=jet_angle,
     outfile_dir=outfile_dir,
-    plot_separation=1
+    plot_separation=1,
+    use_cfl=True
 )
 # s = solver.LagrangianSolver1DSpherical(
 #     num_shells=num_shells,

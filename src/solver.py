@@ -81,12 +81,14 @@ class LagrangianSolver1DSpherical:
             self.time += self.dt
             self.__cfl_dt()
             self.plot_timestep(timestep=i)
+            # if i == 1:
+            #     sys.exit()
         print("Finished!")
 
     def __time_dimensional(self):
         return self.time * (self.system.r_0 / self.system.c_s_0)
 
-    def __cfl_dt(self):
+    def __cfl_dt(self, c=0.25):
         """
         Adjust timestep to satisfy CFL condition.
         """
@@ -99,10 +101,11 @@ class LagrangianSolver1DSpherical:
         dt = copy(self.dt)
         for i in range(0, self.num_shells - 1):
             criterion = (self.grid[i + 1].radius - self.grid[i].radius) / self.grid[i].velocity
+            criterion = abs(criterion)
             if dt > criterion:
-                # dt = 0.25 * ((self.grid[i + 1].radius - self.grid[i].radius) / self.grid[i].velocity)
-                dt = 0.25 * criterion
+                dt = c * criterion
         self.dt = dt
+        print("dt = {}".format(self.dt))
         return self.dt
 
     def __solve_q(self, grid_copy):
@@ -201,8 +204,8 @@ class LagrangianSolver1DSpherical:
         return (pressure_tplus / density_tplus) * self.system.m_a / self.R
 
     def plot_timestep(self, timestep, show=True):
-        if timestep % self.plot_separation != 0:
-            return None
+        # if timestep % self.plot_separation != 0:
+        #     return None
         fig = plt.figure(figsize=(16, 9))
         ax_pressure = fig.add_subplot(221)
         ax_density = fig.add_subplot(222)
