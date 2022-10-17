@@ -40,6 +40,7 @@ class LagrangianSolver1DSpherical:
         self.lambda_0 = self.system.lambda_0
         self.output_file_interval = output_file_interval
         self.outfile_dir = outfile_dir
+        self.cfl_coefficient = kwargs.get("cfl_coefficient", 0.25)
         self.__use_cfl = use_cfl
         self.plot_separation = kwargs.get("plot_separation", 100)
         if self.outfile_dir in os.listdir(os.getcwd()):
@@ -81,7 +82,7 @@ class LagrangianSolver1DSpherical:
                     path=self.outfile_dir,
                     system=self.system,
                     fname=self.output_count,
-                    time=self.time,
+                    time=self.__time_dimensional(),
                     timestep=i,
                     grid=self.grid,
                     mass_fraction_loss=mass_loss,
@@ -98,7 +99,7 @@ class LagrangianSolver1DSpherical:
     def __time_dimensional(self):
         return self.time * (self.system.r_0 / self.system.c_s_0)
 
-    def __cfl_dt(self, c=0.25):
+    def __cfl_dt(self):
         """
         Adjust timestep to satisfy CFL condition.
         """
@@ -113,7 +114,7 @@ class LagrangianSolver1DSpherical:
             criterion = (self.grid[i + 1].radius - self.grid[i].radius) / self.grid[i].velocity
             criterion = abs(criterion)
             if dt > criterion:
-                dt = c * criterion
+                dt = self.cfl_coefficient * criterion
         self.dt = dt
         return self.dt
 
