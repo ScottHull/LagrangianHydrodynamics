@@ -28,8 +28,11 @@ s = solver.LagrangianSolverJet(
     u_s=u_s,
     jet_angle=jet_angle,
     outfile_dir=outfile_dir,
-    plot_separation=1,
-    use_cfl=True
+    plot_separation=1000,
+    use_cfl=True,
+    show_figs=False,
+    save_figs=True,
+    output_file_interval=10000,
 )
 # s = solver.LagrangianSolver1DSpherical(
 #     num_shells=num_shells,
@@ -43,5 +46,4 @@ s = solver.LagrangianSolverJet(
 #     u_s=u_s,
 #     outfile_dir=outfile_dir,
 # )
-print(s.system.rho_0, s.system.c_s_0, s.system.vesc)
 s.solve(timesteps=int(5e6))

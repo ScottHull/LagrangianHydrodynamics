@@ -20,7 +20,8 @@ class LagrangianSolver1DSpherical:
     """
 
     def __init__(self, num_shells, gamma_a, r_0, P_0, T_0, m_a, gamma, mass_planet, u_s, R=8.314,
-                 outfile_dir="/scratch/shull4/outputs", use_cfl=True, **kwargs):
+                 outfile_dir="/scratch/shull4/outputs", output_file_interval=1000, use_cfl=True, save_figs=False,
+                 show_figs=False, **kwargs):
         num_shells += 1
         self.R = R
         self.rho_0 = P_0 * m_a / (T_0 * R)  # ideal gas
@@ -37,16 +38,25 @@ class LagrangianSolver1DSpherical:
         self.num_shells = num_shells
         self.mass_planet = mass_planet
         self.lambda_0 = self.system.lambda_0
+        self.output_file_interval = output_file_interval
         self.outfile_dir = outfile_dir
         self.__use_cfl = use_cfl
         self.plot_separation = kwargs.get("plot_separation", 100)
         if self.outfile_dir in os.listdir(os.getcwd()):
             shutil.rmtree(self.outfile_dir)
         os.mkdir(self.outfile_dir)
+        self.show_figs = show_figs
+        self.save_figs = save_figs
+        if self.save_figs:
+            self.fig_save_path = kwargs.get("fig_save_path", 'plots')
+            if self.fig_save_path in os.listdir(os.getcwd()):
+                shutil.rmtree(self.fig_save_path)
+            os.mkdir(self.fig_save_path)
 
-    def solve(self, timesteps, output_interval=1000):
+    def solve(self, timesteps):
         for i in range(0, timesteps):
-            print("At time {} ({}/{} steps)".format(self.__time_dimensional(), i, timesteps))
+            if i % 500 == 0:
+                print("At time {} ({}/{} steps)".format(self.__time_dimensional(), i, timesteps))
             grid_copy = copy(self.grid)
             self.__solve_q(grid_copy=grid_copy)
             for index, p in enumerate(grid_copy):
@@ -65,7 +75,7 @@ class LagrangianSolver1DSpherical:
                                                      density_tplus=p.density)
             grid_copy[-1].pressure = 0.0
             grid_copy[-1].density = 0.0
-            if i % output_interval == 0:
+            if i % self.output_file_interval == 0:
                 mass_loss = self.mass_loss()  # assess atmospheric mass loss
                 output.write_state(
                     path=self.outfile_dir,
@@ -105,7 +115,6 @@ class LagrangianSolver1DSpherical:
             if dt > criterion:
                 dt = c * criterion
         self.dt = dt
-        print("dt = {}".format(self.dt))
         return self.dt
 
     def __solve_q(self, grid_copy):
@@ -162,7 +171,6 @@ class LagrangianSolver1DSpherical:
         a3 = (((self.grid[index + 1].radius ** 2) * self.grid[index + 1].velocity) - (
                 (p.radius ** 2) * p.velocity)) / (
                      self.grid[index + 1].mass - p.mass)
-        print(p.pressure - ((a1 * a2 * a3) * self.dt))
         return p.pressure - ((a1 * a2 * a3) * self.dt)
 
     def numerical_viscosity_mid_forward(self, index):
@@ -203,9 +211,9 @@ class LagrangianSolver1DSpherical:
         """
         return (pressure_tplus / density_tplus) * self.system.m_a / self.R
 
-    def plot_timestep(self, timestep, show=True):
-        # if timestep % self.plot_separation != 0:
-        #     return None
+    def plot_timestep(self, timestep):
+        if timestep % self.plot_separation != 0:
+            return None
         fig = plt.figure(figsize=(16, 9))
         ax_pressure = fig.add_subplot(221)
         ax_density = fig.add_subplot(222)
@@ -261,8 +269,10 @@ class LagrangianSolver1DSpherical:
         ax_mass.grid()
         fig.suptitle("Time: {}".format(self.__time_dimensional()))
 
-        if show:
+        if self.show_figs:
             plt.show()
+        if self.save_figs:
+            plt.savefig("{}/{}.png".format(self.fig_save_path, timestep))
 
 
 class LagrangianSolverJet(LagrangianSolver1DSpherical):
@@ -308,8 +318,6 @@ class LagrangianSolverJet(LagrangianSolver1DSpherical):
                 (p.radius ** 2) * p.velocity)) / (
                      self.grid[index + 1].mass - p.mass)
         pres = p.pressure - ((a1 * a2 * a3) * self.dt)
-        if pres < 0:
-            print("NEG PRESSURE", p.pressure, p.radius, p.velocity)
         return pres
 
     def radius(self, index, velocity_tplus):

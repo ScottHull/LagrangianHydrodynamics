@@ -70,6 +70,5 @@ class InitialConditionsJet(InitialConditionsSpherical):
         """
         We model the volume of each shell as a thin cylinder which composes the cone.
         """
-        # print(mass_last_index, rho_index, r_last_index, r_index)
         vol = pi * (r_index ** 2) * (tan(self.jet_angle) ** 2) * (r_index - r_last_index)  # volume of cylindar shell
         return mass_last_index + (rho_index * vol)
