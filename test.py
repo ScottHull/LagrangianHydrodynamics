@@ -16,7 +16,7 @@ u_s = None  # defaults to 0.5 * u_esc in Genda and Abe 2003
 outfile_dir = "spherical_test_outputs"
 output_plots_dir = "spherical_plots"
 
-s = solver.LagrangianSolverJet(
+s = solver.LagrangianSolver1DSpherical(
     num_shells=num_shells,
     P_0=P_0,
     T_0=T_0,
