@@ -14,7 +14,8 @@ T_0 = 288  # K, initial temperature (surface temperature)
 P_0 = 1.01e5  # Pa, initial pressure (sea level)
 u_s = None  # defaults to 0.5 * u_esc in Genda and Abe 2003
 jet_angle = 45.0
-outfile_dir = "test_outputs"
+outfile_dir = "jet_test_outputs"
+output_plots_dir = "jet_plots"
 
 s = solver.LagrangianSolverJet(
     num_shells=num_shells,
@@ -33,6 +34,7 @@ s = solver.LagrangianSolverJet(
     show_figs=False,
     save_figs=True,
     output_file_interval=10000,
+    fig_save_path=output_plots_dir,
 )
 # s = solver.LagrangianSolver1DSpherical(
 #     num_shells=num_shells,
