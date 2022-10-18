@@ -17,12 +17,12 @@ rho_0 = 1.223254617378986
 c_s_0 = 339.99010127578305
 vesc = 11160.421945428408
 
-if os.path.exists(fig_path):
-    shutil.rmtree(fig_path)
-os.mkdir(fig_path)
-
-# colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
-
+try:
+    if os.path.exists(fig_path):
+        shutil.rmtree(fig_path)
+    os.mkdir(fig_path)
+except OSError:
+    pass
 
 fig = plt.figure(figsize=(16, 9))
 ax_density = fig.add_subplot(221)
@@ -30,7 +30,8 @@ ax_pressure = fig.add_subplot(222)
 ax_velocity = fig.add_subplot(223)
 ax_temperature = fig.add_subplot(224)
 
-for i in iterations_to_plot:
+colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
+for index, i in enumerate(iterations_to_plot):
     plot.plot_time(
         output_path=output_path,
         iteration=i,
