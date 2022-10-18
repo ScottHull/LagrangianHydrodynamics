@@ -53,11 +53,14 @@ class LagrangianSolver1DSpherical:
             if self.fig_save_path in os.listdir(os.getcwd()):
                 shutil.rmtree(self.fig_save_path)
             os.mkdir(self.fig_save_path)
+        self.increment = 0
 
-    def solve(self, timesteps):
-        for i in range(0, timesteps):
-            if i % 500 == 0:
-                print("At time {} ({}/{} steps)".format(self.__time_dimensional(), i, timesteps))
+    def solve(self, max_time: float):
+        dimensional_time = 0.0
+        while dimensional_time <= max_time:
+            dimensional_time = self.__time_dimensional()
+            if self.increment % 500 == 0:
+                print("At time {} (max: {} sec.) ({} iterations)".format(dimensional_time, max_time, self.increment))
             grid_copy = copy(self.grid)
             self.__solve_q(grid_copy=grid_copy)
             for index, p in enumerate(grid_copy):
@@ -82,18 +85,17 @@ class LagrangianSolver1DSpherical:
                     path=self.outfile_dir,
                     system=self.system,
                     fname=self.output_count,
-                    time=self.__time_dimensional(),
-                    timestep=i,
+                    time=dimensional_time,
+                    timestep=self.increment,
                     grid=self.grid,
                     mass_fraction_loss=mass_loss,
                 )  # write output files
                 self.output_count += 1  # increment output count
             self.grid = grid_copy
             self.time += self.dt
+            self.plot_timestep(timestep=self.increment)
             self.__cfl_dt()
-            self.plot_timestep(timestep=i)
-            # if i == 1:
-            #     sys.exit()
+            self.increment += 1
         print("Finished!")
 
     def __time_dimensional(self):
@@ -268,7 +270,7 @@ class LagrangianSolver1DSpherical:
         ax_density.grid()
         ax_velocity.grid()
         ax_mass.grid()
-        fig.suptitle("Time: {}".format(self.__time_dimensional()))
+        fig.suptitle("Time: {}".format(dimensional_time))
 
         if self.show_figs:
             plt.show()

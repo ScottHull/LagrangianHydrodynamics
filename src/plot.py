@@ -20,7 +20,7 @@ def annotate(ax, time, radius, vals):
 
 
 def plot_time(output_path, iteration, fig, ax_density, ax_pressure, ax_velocity, ax_temperature, r_0, rho_0, P_0, vesc,
-              T_0, fig_path):
+              T_0, fig_path, min_x=0, max_x=8):
     f = output_path + "/{}.csv".format(iteration)
     time = None
     mass_loss_fraction = None
@@ -73,15 +73,14 @@ def plot_time(output_path, iteration, fig, ax_density, ax_pressure, ax_velocity,
     ax_velocity.set_ylabel("$v / v_{esc}$")
     ax_temperature.set_ylabel("$T / T_{0}$")
 
+    for ax in [ax_density, ax_pressure, ax_velocity, ax_temperature]:
+        ax.set_xlim(min_x, max_x)
+        ax.grid()
+
     annotate(ax=ax_density, time=time, radius=norm_radius, vals=norm_density)
     annotate(ax=ax_pressure, time=time, radius=norm_radius, vals=norm_pressure)
     annotate(ax=ax_velocity, time=time, radius=norm_radius, vals=norm_velocity)
     annotate(ax=ax_temperature, time=time, radius=norm_radius, vals=norm_temperature)
-
-    ax_density.grid()
-    ax_pressure.grid()
-    ax_velocity.grid()
-    ax_temperature.grid()
 
     fig.supxlabel("$r / r_{esc}$")
     # fig.suptitle("Time {} s".format(time))

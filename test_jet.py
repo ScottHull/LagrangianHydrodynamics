@@ -16,6 +16,7 @@ u_s = None  # defaults to 0.5 * u_esc in Genda and Abe 2003
 jet_angle = 45.0
 outfile_dir = "jet_test_outputs"
 output_plots_dir = "jet_plots"
+max_time = 86400  # 1 day in seconds
 
 s = solver.LagrangianSolverJet(
     num_shells=num_shells,
@@ -48,4 +49,4 @@ s = solver.LagrangianSolverJet(
 #     u_s=u_s,
 #     outfile_dir=outfile_dir,
 # )
-s.solve(timesteps=int(5e6))
+s.solve(max_time=max_time)

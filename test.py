@@ -15,6 +15,7 @@ P_0 = 1.01e5  # Pa, initial pressure (sea level)
 u_s = None  # defaults to 0.5 * u_esc in Genda and Abe 2003
 outfile_dir = "spherical_test_outputs"
 output_plots_dir = "spherical_plots"
+max_time = 86400  # 1 day in seconds
 
 s = solver.LagrangianSolver1DSpherical(
     num_shells=num_shells,
@@ -34,5 +35,4 @@ s = solver.LagrangianSolver1DSpherical(
     output_file_interval=10000,
     fig_save_path=output_plots_dir,
 )
-print(s.system.rho_0, s.system.c_s_0, s.system.vesc)
-s.solve(timesteps=int(5e6))
+s.solve(max_time=max_time)
