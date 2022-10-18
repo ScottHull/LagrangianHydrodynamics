@@ -48,7 +48,8 @@ def plot_time(output_path, iteration, fig, ax_density, ax_pressure, ax_velocity,
         norm_radius,
         norm_density,
         linewidth=2.0,
-        color='black'
+        color='black',
+        label="t = {} s".format(round(float(time), 2))
     )
     ax_pressure.plot(
         norm_radius,
@@ -77,10 +78,10 @@ def plot_time(output_path, iteration, fig, ax_density, ax_pressure, ax_velocity,
         ax.set_xlim(min_x, max_x)
         ax.grid()
 
-    annotate(ax=ax_density, time=time, radius=norm_radius, vals=norm_density)
-    annotate(ax=ax_pressure, time=time, radius=norm_radius, vals=norm_pressure)
-    annotate(ax=ax_velocity, time=time, radius=norm_radius, vals=norm_velocity)
-    annotate(ax=ax_temperature, time=time, radius=norm_radius, vals=norm_temperature)
+    # annotate(ax=ax_density, time=time, radius=norm_radius, vals=norm_density)
+    # annotate(ax=ax_pressure, time=time, radius=norm_radius, vals=norm_pressure)
+    # annotate(ax=ax_velocity, time=time, radius=norm_radius, vals=norm_velocity)
+    # annotate(ax=ax_temperature, time=time, radius=norm_radius, vals=norm_temperature)
 
     fig.supxlabel("$r / r_{esc}$")
     # fig.suptitle("Time {} s".format(time))

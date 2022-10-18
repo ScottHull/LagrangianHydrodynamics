@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 
 from src import plot
 
+plt.style.use('seaborn-colorblind')
+
 iterations_to_plot = [10, 50, 100]
 output_path = "/scratch/shull4/outputs"
 fig_path = "/scratch/shull4/lagrangian_figs"
@@ -18,6 +20,9 @@ vesc = 11160.421945428408
 if os.path.exists(fig_path):
     shutil.rmtree(fig_path)
 os.mkdir(fig_path)
+
+# colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
+
 
 fig = plt.figure(figsize=(16, 9))
 ax_density = fig.add_subplot(221)
@@ -39,7 +44,9 @@ for i in iterations_to_plot:
         P_0=r_0,
         vesc=vesc,
         T_0=T_0,
-        fig_path=fig_path
+        fig_path=fig_path,
+        min_x=0,
+        max_x=1.005
     )
 
 plt.savefig("lagrangian.png", format='png')
