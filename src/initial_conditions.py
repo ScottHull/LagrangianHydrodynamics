@@ -16,13 +16,20 @@ class InitialConditionsSpherical:
 
 
     def _r_last(self, polytropic_exponent, lambda_0, r_0):
+        """
+        The radius of the last shell in the atmosphere.
+        """
         numerator = (r_0 * polytropic_exponent * lambda_0) - (r_0 * lambda_0)
         denominator = (polytropic_exponent * lambda_0) - polytropic_exponent - lambda_0
         return numerator / denominator
 
 
     def radius_initial(self, index, total_shells, polytropic_exponent, lambda_0, r_0):
+        """
+        The radius of the ith shell in the atmosphere.
+        """
         r_last = self._r_last(polytropic_exponent=polytropic_exponent, lambda_0=lambda_0, r_0=r_0)
+        print(index)
         return r_0 + (index * ((r_last - r_0) / total_shells))
 
 
@@ -58,7 +65,6 @@ class InitialConditionsSpherical:
         exponent = 1
         T_T0 = (a1 * a2 + 1) ** exponent  # T / T_0
         return T_T0 * T_0
-
 
 class InitialConditionsJet(InitialConditionsSpherical):
 

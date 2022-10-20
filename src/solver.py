@@ -24,7 +24,7 @@ class LagrangianSolver1DSpherical:
                  show_figs=False, **kwargs):
         num_shells += 1
         self.R = R
-        self.rho_0 = P_0 * m_a / (T_0 * R)  # ideal gas
+        self.rho_0 = kwargs.get("rho_0", P_0 * m_a / (T_0 * R))  # ideal gas
         self.system = setup.SphericalSystem(num_shells=num_shells, gamma_a=gamma_a, mass_planet=mass_planet, r_0=r_0,
                                             rho_0=self.rho_0,
                                             P_0=P_0, T_0=T_0, m_a=m_a, gamma=gamma, u_s=u_s)
@@ -53,14 +53,15 @@ class LagrangianSolver1DSpherical:
             if self.fig_save_path in os.listdir(os.getcwd()):
                 shutil.rmtree(self.fig_save_path)
             os.mkdir(self.fig_save_path)
-        self.increment = 0
+        self.iteration = 0
 
     def solve(self, max_time: float):
         dimensional_time = 0.0
         while dimensional_time <= max_time:
+        # while self.iteration == 0:
             dimensional_time = self.__time_dimensional()
-            if self.increment % 500 == 0:
-                print("At time {} (max: {} sec.) ({} iterations)".format(dimensional_time, max_time, self.increment))
+            if self.iteration % 500 == 0:
+                print("At time {} (max: {} sec.) ({} iterations)".format(dimensional_time, max_time, self.iteration))
             grid_copy = copy(self.grid)
             self.__solve_q(grid_copy=grid_copy)
             for index, p in enumerate(grid_copy):
@@ -79,24 +80,27 @@ class LagrangianSolver1DSpherical:
                                                      density_tplus=p.density)
             grid_copy[-1].pressure = 0.0
             grid_copy[-1].density = 0.0
-            if i % self.output_file_interval == 0:
+            if self.iteration % self.output_file_interval == 0:
                 mass_loss = self.mass_loss()  # assess atmospheric mass loss
                 output.write_state(
                     path=self.outfile_dir,
                     system=self.system,
                     fname=self.output_count,
                     time=dimensional_time,
-                    timestep=self.increment,
+                    timestep=self.iteration,
                     grid=self.grid,
                     mass_fraction_loss=mass_loss,
                 )  # write output files
                 self.output_count += 1  # increment output count
             self.grid = grid_copy
             self.time += self.dt
-            self.plot_timestep(timestep=self.increment)
+            self.plot_timestep(timestep=self.iteration)
             self.__cfl_dt()
-            self.increment += 1
+            self.iteration += 1
         print("Finished!")
+        # for p in self.grid[0:-1]:
+        #     print(p.radius, p.pressure, p.velocity * self.system.c_s_0 / sqrt(2 * self.system.G * self.mass_planet / self.system.r_0), p.density, p.temperature, p.mass /  self.grid[-1].mass, self.time)
+
 
     def __time_dimensional(self):
         return self.time * (self.system.r_0 / self.system.c_s_0)
@@ -270,7 +274,7 @@ class LagrangianSolver1DSpherical:
         ax_density.grid()
         ax_velocity.grid()
         ax_mass.grid()
-        fig.suptitle("Time: {}".format(dimensional_time))
+        fig.suptitle("Time: {}".format(self.__time_dimensional()))
 
         if self.show_figs:
             plt.show()

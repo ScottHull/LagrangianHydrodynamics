@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 num_shells = 2000
 r_0 = 6.4e6  # initial planet radius
 mass_planet = 5.972e24  # mass earth
-gamma_a = 1.4  # polytropic exponent
+gamma_a = 1.9  # polytropic exponent
 gamma = 1.4  # specific heat
 M_a = 0.029  # g/mol  # molecule mass, will likely have to be heavier for BSE atmosphere
 T_0 = 288  # K, initial temperature (surface temperature)

@@ -46,6 +46,7 @@ for index, i in enumerate(iterations_to_plot):
         vesc=vesc,
         T_0=T_0,
         fig_path=fig_path,
+        color=colors[index],
         min_x=0,
         max_x=1.005
     )

@@ -2,6 +2,7 @@ import src.initial_conditions as ic
 import src.nondimensional as nd
 
 from math import sqrt
+from copy import copy
 
 
 class Point:
@@ -18,7 +19,7 @@ class Point:
 
 class SphericalSystem:
 
-    def __init__(self, num_shells, gamma_a, mass_planet, r_0, rho_0, P_0, T_0, m_a, gamma, u_s):
+    def __init__(self, num_shells, gamma_a, mass_planet, r_0, rho_0, P_0, T_0, m_a, gamma, u_s, **kwargs):
         self.num_shells = num_shells
         self.G = 6.67408e-11
 
@@ -32,7 +33,8 @@ class SphericalSystem:
         self.mass_planet = mass_planet
         self.vesc = sqrt(2 * self.G * self.mass_planet / self.r_0)
         self.lambda_0 = self.G * self.mass_planet * self.rho_0 / (self.r_0 * self.P_0)
-        self.c_s_0 = sqrt(gamma_a * self.P_0 / self.rho_0)
+        self.c_s_0 = kwargs.get("c_s_0", sqrt(gamma_a * self.P_0 / self.rho_0))
+        # self.c_s_0 = 340
         self.u_s = u_s  # initial shock velocity, is 0.5 * u_esc in Genda and Abe 2003
         if self.u_s is None:
             self.u_s = 0.5 * self.vesc  # is 0.5 * u_esc in Genda and Abe 2003
@@ -87,6 +89,19 @@ class SphericalSystem:
             p.radius = nd.radius_nd(radius=p.radius, radius_0=self.r_0)
             p.velocity = nd.velocity_nd(velocity=p.velocity, density_0=self.rho_0, gamma=self.gamma,
                                         pressure_0=self.P_0, c_s_0=self.c_s_0)
+
+    def get_rho_0_given_atmosphere_mass(self, mass_atmosphere, increment_rho_0=20):
+        """
+        Given the mass of the atmosphere, find the initial density at the surface of the planet.
+        """
+        increment_rho_0 = increment_rho_0
+        increment_sign = 1
+        flipped = False  # if the sign of the increment has been flipped
+        self.__setup_grid()
+        previous_grid = copy(self.grid)
+
+
+
 
 
 class JetSystem:
