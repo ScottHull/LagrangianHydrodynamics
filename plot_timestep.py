@@ -8,8 +8,10 @@ plt.style.use('seaborn-colorblind')
 
 times_to_plot = [0.5, 1, 1.5, 2.0, 2.5, 3.0]
 times_to_plot = dict(zip(times_to_plot, [False for i in times_to_plot]))
-output_path = "/scratch/shull4/outputs"
-fig_path = "/scratch/shull4/lagrangian_figs"
+# output_path = "/scratch/shull4/outputs"
+# fig_path = "/scratch/shull4/lagrangian_figs"
+output_path = "spherical_test_outputs"
+fig_path = ""
 
 r_0 = 6.4e6  # initial planet radius
 T_0 = 288
