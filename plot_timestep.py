@@ -35,7 +35,7 @@ ax_temperature = fig.add_subplot(224)
 
 colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
 for f in os.listdir(output_path):
-    with open(f, 'r') as infile:
+    with open(f"{output_path}/{f}", 'r') as infile:
         time = next(infile)
         timestep = next(infile)
         mass_loss_fraction = next(infile)
