@@ -1,4 +1,4 @@
-    program finite_diff
+      program finite_diff
       implicit none
 
       integer, parameter :: n=2001, m=100,nn=2002
@@ -7,18 +7,6 @@
       double precision :: gamma,pi,lambda,dt,Mp,GG,c0,p0,rho0,r0,Matm,cq,vesc,Mloss
       double precision :: us,lambda0,rad,mass,dr,gamma_a,rlast,tt,t0,temp0,Ma,Rgas,watermass
       double precision :: coefficient,dt0,dt_cfl
-!      character(len=1024) :: filename
-!      character(len=1024) :: format_string
-
-    contains
-      end program finite_diff
-          character(len=20) function str(k)
-    !   "Convert an integer to string."
-        integer, intent(in) :: k
-        write (str, *) k
-        str = adjustl(str)
-    end function str
-
 
       !parameters
       gamma=1.4d0
@@ -47,10 +35,10 @@
 
       rlast=r0/(1d0-gamma_a/(gamma_a-1d0)/lambda0)
       t0=r0/c0
- 
 
-!      open(1,file='Mt.dat')
-      
+
+      open(1,file='Mt.dat')
+
       !Making the initial conditions
       mm(1)=0d0
       do i=1,n
@@ -75,9 +63,9 @@
       !print *,Matm
       !stop
 
-      
+
       !Normalizing it
-      
+
       do i=1,n
          uu(i,1)=uu(i,1)/c0
          rr(i,1)=rr(i,1)/r0
@@ -93,7 +81,7 @@
       !print *,temp(1,1)
       !stop
 
-      
+
       !time-dependent part
 
       !dt=0.01/t0
@@ -107,20 +95,7 @@
 
       do l=1,nt
 
-!          if (l < 10) then
-!            format_string = "(I1)"
-!          else if (10 < l < 100) then
-!            format_string = "(I2)"
-!          else if (100 < l < 1000) then
-!             format_string = "(I3)"
-!          else
-!              format_string = "(I4)"
-!          endif
-
-
-          open(1, file='fortran_file_test/output_'//trim(str(l))//'.dat')
-
-         do j=1,1   
+         do j=1,1
             do i=1,n-1
                if (uu(i+1,j)<uu(i,j))then
                   qq(i,j)=-cq*gamma*rho(i,j)*(uu(i+1,j)-uu(i,j))*(sqrt(pp(i,j)/rho(i,j))-(gamma+1d0)/2d0*(uu(i+1,j)-uu(i,j)))
@@ -141,7 +116,7 @@
             do i=1,n
                rr(i,j+1)=rr(i,j)+uu(i,j+1)*dt
             enddo
-       
+
             do i=1,n-1
                pp(i,j+1)=pp(i,j)-coefficient*rho(i,j)*(gamma*pp(i,j)+(gamma-1d0)*qq(i,j))*(rr(i+1,j)**2d0* &
        &           uu(i+1,j)-rr(i,j)**2.d0*uu(i,j))/(mm(i+1)-mm(i))*dt
@@ -159,7 +134,7 @@
             rho(n+1,j+1)=0d0
 
 
-            
+
             if(mod(l,100)==0)then
                do i=1,n
                   if  (uu(i,1)*c0/sqrt(2.d0*GG*Mp/(r0*rr(i,1)))>1d0)then
@@ -168,10 +143,10 @@
                      exit
                   endif
                enddo
-             
+
             endif
-            
-              
+
+
             tt=tt+dt
 
             do i=1,n
@@ -189,21 +164,20 @@
                if  (dt > (rr(i+1,j)-rr(i,j))/uu(i,j))then
                   dt_cfl= 0.25*(rr(i+1,j)-rr(i,j))/uu(i,j)
                   dt=dt_cfl
-                  
-                  !print *,'CFL', dt_cfl    
-                     
+
+                  !print *,'CFL', dt_cfl
+
                endif
             enddo
-            
+
          enddo
       enddo
 
       do i=1,n-1
          !if (mm(i)/mm(n)<0.80)then
          !print *,rr(i,1),pp(i,1),uu(i,1)*c0/sqrt(2.d0*GG*Mp/(r0*rr(i,1))),rho(i,1),temp(i,1),mm(i)/mm(n),tt*t0
-
          print *,rr(i,1),pp(i,1),uu(i,1)*c0/sqrt(2.d0*GG*Mp/r0),rho(i,1),temp(i,1),mm(i)/mm(n),tt*t0
-         write(1, *) rr(i,1) * r0,pp(i,1) * p0,uu(i,1)*c0/sqrt(2.d0*GG*Mp/r0),rho(i,1) * rho0,temp(i,1) * temp0,mm(i),tt*t0
+         write(1,*)rr(i,1) * r0,pp(i,1) * p0,uu(i,1)*c0/sqrt(2.d0*GG*Mp/r0),rho(i,1) * rho0,temp(i,1) * temp0,mm(i),tt*t0
          !endif
       enddo
          
