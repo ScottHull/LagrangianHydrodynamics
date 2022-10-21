@@ -6,8 +6,7 @@ from src import plot
 
 plt.style.use('seaborn-colorblind')
 
-times_to_plot = [0.5, 1, 1.5, 2.0, 2.5, 3.0]
-times_to_plot = dict(zip(times_to_plot, [False for i in times_to_plot]))
+iterations_to_plot = [1, 2, 3]
 # output_path = "/scratch/shull4/outputs"
 # fig_path = "/scratch/shull4/lagrangian_figs"
 output_path = "spherical_test_outputs"
@@ -34,36 +33,25 @@ ax_velocity = fig.add_subplot(223)
 ax_temperature = fig.add_subplot(224)
 
 colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
-for f in os.listdir(output_path):
-    with open(f"{output_path}/{f}", 'r') as infile:
-        time = float(next(infile))
-        timestep = float(next(infile))
-        mass_loss_fraction = float(next(infile))
-    for index, i in enumerate(times_to_plot.keys()):
-        if time >= i and not times_to_plot[i]:
-            times_to_plot[i] = True
-            plot.plot_time(
-                output_path=output_path,
-                iteration=int(f.split(".")[0]),
-                fig=fig,
-                ax_density=ax_density,
-                ax_pressure=ax_pressure,
-                ax_velocity=ax_velocity,
-                ax_temperature=ax_temperature,
-                r_0=r_0,
-                rho_0=rho_0,
-                P_0=r_0,
-                vesc=vesc,
-                T_0=T_0,
-                fig_path=fig_path,
-                color=colors[index],
-                min_x=1,
-                max_x=1.005
-            )
-    if False in times_to_plot.values():
-        continue
-    else:
-        break
+for index, i in enumerate(iterations_to_plot):
+    plot.plot_time(
+        output_path=output_path,
+        iteration=i,
+        fig=fig,
+        ax_density=ax_density,
+        ax_pressure=ax_pressure,
+        ax_velocity=ax_velocity,
+        ax_temperature=ax_temperature,
+        r_0=r_0,
+        rho_0=rho_0,
+        P_0=r_0,
+        vesc=vesc,
+        T_0=T_0,
+        fig_path=fig_path,
+        color=colors[index],
+        min_x=1,
+        max_x=1.005
+    )
 
 plt.savefig("lagrangian.png", format='png')
 
