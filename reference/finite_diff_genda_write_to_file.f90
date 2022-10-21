@@ -1,4 +1,11 @@
-      program finite_diff
+    character(len=20) function str(k)
+    !   "Convert an integer to string."
+        integer, intent(in) :: k
+        write (str, *) k
+        str = adjustl(str)
+    end function str
+
+    program finite_diff
       implicit none
 
       integer, parameter :: n=2001, m=100,nn=2002
