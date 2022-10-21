@@ -7,7 +7,6 @@
       double precision :: gamma,pi,lambda,dt,Mp,GG,c0,p0,rho0,r0,Matm,cq,vesc,Mloss
       double precision :: us,lambda0,rad,mass,dr,gamma_a,rlast,tt,t0,temp0,Ma,Rgas,watermass
       double precision :: coefficient,dt0,dt_cfl
-      character(len=1024) :: filename
 
       !parameters
       gamma=1.4d0
@@ -106,7 +105,7 @@
               format_string = "(I4)"
           endif
 
-          char = "output_"//char(i)//".dat"
+          char = "/fortran_test/output_"//char(i)//".dat"
 
           open(1, file=char)
 
