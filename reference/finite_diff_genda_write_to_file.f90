@@ -7,6 +7,8 @@
       double precision :: gamma,pi,lambda,dt,Mp,GG,c0,p0,rho0,r0,Matm,cq,vesc,Mloss
       double precision :: us,lambda0,rad,mass,dr,gamma_a,rlast,tt,t0,temp0,Ma,Rgas,watermass
       double precision :: coefficient,dt0,dt_cfl
+!      character(len=1024) :: filename
+!      character(len=1024) :: format_string
 
       !parameters
       gamma=1.4d0
@@ -95,19 +97,18 @@
 
       do l=1,nt
 
-!          if (i < 10) then
+!          if (l < 10) then
 !            format_string = "(I1)"
-!          else if (10 < i < 100) then
+!          else if (10 < l < 100) then
 !            format_string = "(I2)"
-!          else if (100 < i < 1000) then
+!          else if (100 < l < 1000) then
 !             format_string = "(I3)"
 !          else
 !              format_string = "(I4)"
 !          endif
 
-          char = "/fortran_test/output_"//char(i)//".dat"
 
-          open(1, file=char)
+          open(1, file='fortran_file_test/output_'//trim(str(l))//'.dat')
 
          do j=1,1   
             do i=1,n-1
