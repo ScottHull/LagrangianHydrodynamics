@@ -36,9 +36,9 @@ ax_temperature = fig.add_subplot(224)
 colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
 for f in os.listdir(output_path):
     with open(f"{output_path}/{f}", 'r') as infile:
-        time = next(infile)
-        timestep = next(infile)
-        mass_loss_fraction = next(infile)
+        time = float(next(infile))
+        timestep = float(next(infile))
+        mass_loss_fraction = float(next(infile))
     for index, i in enumerate(times_to_plot.keys()):
         if time >= i and not times_to_plot[i]:
             times_to_plot[i] = True
