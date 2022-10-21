@@ -1,10 +1,3 @@
-    character(len=20) function str(k)
-    !   "Convert an integer to string."
-        integer, intent(in) :: k
-        write (str, *) k
-        str = adjustl(str)
-    end function str
-
     program finite_diff
       implicit none
 
@@ -16,6 +9,14 @@
       double precision :: coefficient,dt0,dt_cfl
 !      character(len=1024) :: filename
 !      character(len=1024) :: format_string
+
+          character(len=20) function str(k)
+    !   "Convert an integer to string."
+        integer, intent(in) :: k
+        write (str, *) k
+        str = adjustl(str)
+    end function str
+
 
       !parameters
       gamma=1.4d0
