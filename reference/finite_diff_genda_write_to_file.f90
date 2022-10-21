@@ -95,15 +95,15 @@
 
       do l=1,nt
 
-          if (i < 10) then
-            format_string = "(I1)"
-          else if (10 < i < 100) then
-            format_string = "(I2)"
-          else if (100 < i < 1000) then
-             format_string = "(I3)"
-          else
-              format_string = "(I4)"
-          endif
+!          if (i < 10) then
+!            format_string = "(I1)"
+!          else if (10 < i < 100) then
+!            format_string = "(I2)"
+!          else if (100 < i < 1000) then
+!             format_string = "(I3)"
+!          else
+!              format_string = "(I4)"
+!          endif
 
           char = "/fortran_test/output_"//char(i)//".dat"
 
