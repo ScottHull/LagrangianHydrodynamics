@@ -90,7 +90,7 @@
       tt=0d0
 
       nt=40000*5*2
-      nt=1000
+!      nt=1000
       !nt=15
 
       do l=1,nt
@@ -171,7 +171,7 @@
             enddo
 
          enddo
-         if (mod(l, 50) == 0) then
+         if (mod(l, 10000) == 0) then
          do i=1,n-1
            write(1,*)rr(i,1) * r0,pp(i,1) * p0,uu(i,1)*c0/sqrt(2.d0*GG*Mp/r0),rho(i,1) * rho0,temp(i,1) * temp0,mm(i),tt*t0
          end do
