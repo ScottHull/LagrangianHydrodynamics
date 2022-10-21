@@ -10,6 +10,8 @@
 !      character(len=1024) :: filename
 !      character(len=1024) :: format_string
 
+    contains
+      end program finite_diff
           character(len=20) function str(k)
     !   "Convert an integer to string."
         integer, intent(in) :: k
