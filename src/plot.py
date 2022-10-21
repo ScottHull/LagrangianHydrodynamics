@@ -84,7 +84,7 @@ def plot_time(output_path, iteration, fig, ax_density, ax_pressure, ax_velocity,
     # annotate(ax=ax_velocity, time=time, radius=norm_radius, vals=norm_velocity)
     # annotate(ax=ax_temperature, time=time, radius=norm_radius, vals=norm_temperature)
 
-    fig.supxlabel("$r / r_{esc}$")
+    fig.supxlabel("$r / r_0$")
     # fig.suptitle("Time {} s".format(time))
 
     # plt.savefig(fig_path + "/{}.png".format(time), format='png')
