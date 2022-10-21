@@ -44,7 +44,7 @@ for f in os.listdir(output_path):
             times_to_plot[i] = True
             plot.plot_time(
                 output_path=output_path,
-                iteration=i,
+                iteration=int(f.split(".")[0]),
                 fig=fig,
                 ax_density=ax_density,
                 ax_pressure=ax_pressure,
