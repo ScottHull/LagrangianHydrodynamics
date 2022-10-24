@@ -69,13 +69,9 @@ ax_temperature = fig.add_subplot(224)
 # only plot every other time to reduce the number of lines
 for i in range(0, len(t_i), 2):
     time, iteration = t_i[i]
-    df = pd.read_csv(outfile_dir + "/{}.csv".format(iteration), skiprows=3, header=None, index_col=None)
+    df = pd.read_csv(outfile_dir + "/{}.csv".format(iteration), skiprows=3, header=None, index_col=0)
     # get the radius, pressure, velocity, density, and temperature
-    radius = df[0].values
-    pressure = df[1].values
-    velocity = df[2].values
-    density = df[3].values
-    temperature = df[4].values
+    radius, mass, pressure, density, velocity, temperature = df[1], df[2], df[3], df[4], df[5], df[6]
 
     # plot the normalized data
     ax_density.plot(radius / r_0, density / rho_0, label=f"{time:.2f} s")
