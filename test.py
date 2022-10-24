@@ -49,7 +49,7 @@ for f in os.listdir(outfile_dir):
         iterations.append(int(f.split(".")[0]))
 t_i = zip(times, iterations)
 # sort the list of tuples by the first element (time)
-t_i = sorted(t_i, key=lambda x: x[0])
+t_i = list(sorted(t_i, key=lambda x: x[0]))
 
 r_0 = 6.4e6  # initial planet radius
 T_0 = 288
@@ -67,7 +67,8 @@ ax_temperature = fig.add_subplot(224)
 
 # for each unique time, get the rows that correspond to that time
 # only plot every other time to reduce the number of lines
-for time, iteration in range(0, len(t_i), 2):
+for i in range(0, len(t_i), 2):
+    time, iteration = t_i[i]
     df = pd.read_csv(outfile_dir + "/{}.csv".format(iteration), skiprows=3, header=None)
     # get the radius, pressure, velocity, density, and temperature
     radius = df[0].values
