@@ -29,7 +29,7 @@ def plot_time(output_path, iteration, fig, ax_density, ax_pressure, ax_velocity,
         timestep = next(infile)
         mass_loss_fraction = next(infile)
 
-    df = pd.read_csv(f, skiprows=3, header=None, index_col=0)
+    df = pd.read_csv(f, skiprows=3, header=None, index_col=None)
     radius, mass, pressure, density, velocity, temperature = df[1], df[2], df[3], df[4], df[5], df[6]
 
     # fig = plt.figure(figsize=(16, 9))
