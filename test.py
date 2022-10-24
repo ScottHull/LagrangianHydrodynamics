@@ -17,7 +17,7 @@ P_0 = 1.01e5  # Pa, initial pressure (sea level)
 u_s = None  # defaults to 0.5 * u_esc in Genda and Abe 2003
 outfile_dir = "spherical_test_outputs"
 output_plots_dir = "spherical_plots"
-max_time = 86400  # 1 day in seconds
+max_time = 3.4  # 1 day in seconds
 
 # s = solver.LagrangianSolver1DSpherical(
 #     num_shells=num_shells,
@@ -33,11 +33,11 @@ max_time = 86400  # 1 day in seconds
 #     plot_separation=10000,
 #     use_cfl=True,
 #     show_figs=False,
-#     save_figs=True,
+#     save_figs=False,
 #     output_file_interval=10000,
 #     fig_save_path=output_plots_dir,
 # )
-# s.solve(max_time=max_time)
+s.solve(max_time=max_time)
 
 # read every file in the output directory and get the first row (time) as a float
 # then sort the list of times

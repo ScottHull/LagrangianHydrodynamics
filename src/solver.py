@@ -57,8 +57,8 @@ class LagrangianSolver1DSpherical:
 
     def solve(self, max_time: float):
         dimensional_time = 0.0
-        while dimensional_time <= max_time:
-        # while self.iteration == 0:
+        # while dimensional_time <= max_time:
+        while self.iteration < 500000:
             dimensional_time = self.__time_dimensional()
             if self.iteration % 500 == 0:
                 print("At time {} (max: {} sec.) ({} iterations)".format(dimensional_time, max_time, self.iteration))

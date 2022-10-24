@@ -29,7 +29,6 @@ class InitialConditionsSpherical:
         The radius of the ith shell in the atmosphere.
         """
         r_last = self._r_last(polytropic_exponent=polytropic_exponent, lambda_0=lambda_0, r_0=r_0)
-        print(index)
         return r_0 + (index * ((r_last - r_0) / total_shells))
 
 
