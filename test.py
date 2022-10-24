@@ -69,7 +69,7 @@ ax_temperature = fig.add_subplot(224)
 # only plot every other time to reduce the number of lines
 for i in range(0, len(t_i), 2):
     time, iteration = t_i[i]
-    df = pd.read_csv(outfile_dir + "/{}.csv".format(iteration), skiprows=3, header=None)
+    df = pd.read_csv(outfile_dir + "/{}.csv".format(iteration), skiprows=3, header=None, index_col=0)
     # get the radius, pressure, velocity, density, and temperature
     radius = df[0].values
     pressure = df[1].values
