@@ -1,6 +1,8 @@
 from src import solver
 from src import initial_conditions as ic
+import pandas as pd
 
+import os
 from math import sqrt
 import matplotlib.pyplot as plt
 
@@ -17,22 +19,87 @@ outfile_dir = "spherical_test_outputs"
 output_plots_dir = "spherical_plots"
 max_time = 86400  # 1 day in seconds
 
-s = solver.LagrangianSolver1DSpherical(
-    num_shells=num_shells,
-    P_0=P_0,
-    T_0=T_0,
-    gamma=gamma,
-    gamma_a=gamma_a,
-    m_a=M_a,
-    r_0=r_0,
-    mass_planet=mass_planet,
-    u_s=u_s,
-    outfile_dir=outfile_dir,
-    plot_separation=10000,
-    use_cfl=True,
-    show_figs=False,
-    save_figs=True,
-    output_file_interval=10000,
-    fig_save_path=output_plots_dir,
-)
-s.solve(max_time=max_time)
+# s = solver.LagrangianSolver1DSpherical(
+#     num_shells=num_shells,
+#     P_0=P_0,
+#     T_0=T_0,
+#     gamma=gamma,
+#     gamma_a=gamma_a,
+#     m_a=M_a,
+#     r_0=r_0,
+#     mass_planet=mass_planet,
+#     u_s=u_s,
+#     outfile_dir=outfile_dir,
+#     plot_separation=10000,
+#     use_cfl=True,
+#     show_figs=False,
+#     save_figs=True,
+#     output_file_interval=10000,
+#     fig_save_path=output_plots_dir,
+# )
+# s.solve(max_time=max_time)
+
+# read every file in the output directory and get the first row (time) as a float
+# then sort the list of times
+times = []
+iterations = []
+for f in os.listdir(outfile_dir):
+    with open(os.path.join(outfile_dir, f), "r") as file:
+        times.append(float(file.readline().split()[0]))
+        iterations.append(int(f.split(".")[0]))
+print(times)
+
+r0 = 6.4 * 10 ** 6
+r_0 = 6.4e6  # initial planet radius
+T_0 = 288
+P_0 = 1.01e5
+rho_0 = 1.223254617378986
+c_s_0 = 339.99010127578305
+vesc = 11160.421945428408
+
+# create a figure with 4 subplots
+fig = plt.figure(figsize=(16, 9))
+ax_density = fig.add_subplot(221)
+ax_pressure = fig.add_subplot(222)
+ax_velocity = fig.add_subplot(223)
+ax_temperature = fig.add_subplot(224)
+
+# for each unique time, get the rows that correspond to that time
+# only plot every other time to reduce the number of lines
+for i in range(0, len(times), 2):
+    time = times[i]
+    time_index = times.index(time)
+    iteration = iterations[time_index]
+    df = pd.read_csv(outfile_dir + "/{}.csv".format(iteration), skiprows=3, header=None)
+    # get the radius, pressure, velocity, density, and temperature
+    radius = df[0].values
+    pressure = df[1].values
+    velocity = df[2].values
+    density = df[3].values
+    temperature = df[4].values
+
+    # plot the normalized data
+    ax_density.plot(radius / r0, density / rho_0, label=f"{time:.2f} s")
+    ax_pressure.plot(radius / r0, pressure / P_0, label=f"{time:.2f} s")
+    ax_velocity.plot(radius / r0, velocity / vesc, label=f"{time:.2f} s")
+    ax_temperature.plot(radius / r0, temperature / T_0, label=f"{time:.2f} s")
+
+# label the axes
+ax_density.set_xlabel("r / r0")
+ax_density.set_ylabel("rho / rho0")
+ax_pressure.set_xlabel("r / r0")
+ax_pressure.set_ylabel("P / P0")
+ax_velocity.set_xlabel("r / r0")
+ax_velocity.set_ylabel("v / vesc")
+ax_temperature.set_xlabel("r / r0")
+ax_temperature.set_ylabel("T / T0")
+
+# add a grid to each subplot
+for ax in fig.axes:
+    ax.grid()
+
+# add a legend to the first subplot
+ax_density.legend()
+
+plt.show()
+
