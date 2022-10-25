@@ -37,7 +37,7 @@ max_time = 3.4  # 1 day in seconds
 #     output_file_interval=10000,
 #     fig_save_path=output_plots_dir,
 # )
-s.solve(max_time=max_time)
+# s.solve(max_time=max_time)
 
 # read every file in the output directory and get the first row (time) as a float
 # then sort the list of times
@@ -78,6 +78,7 @@ for i in range(0, len(t_i), 2):
     ax_pressure.plot(radius / r_0, pressure / P_0, label=f"{time:.2f} s")
     ax_velocity.plot(radius / r_0, velocity / vesc, label=f"{time:.2f} s")
     ax_temperature.plot(radius / r_0, temperature / T_0, label=f"{time:.2f} s")
+    break
 
 # label the axes
 ax_density.set_xlabel("r / r0")
