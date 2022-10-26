@@ -94,8 +94,8 @@
       !nt=15
 
       do i=1,n-1
-           write(1,*)rr(i,1) * r0,pp(i,1) * p0,uu(i,1)*c0/sqrt(2.d0*GG*Mp/r0),rho(i,1) * rho0,temp(i,1) * temp0,mm(i),tt*t0
-         end do
+       write(1,*)rr(i,1) * r0,pp(i,1) * p0,uu(i,1)*c0/sqrt(2.d0*GG*Mp/r0),rho(i,1) * rho0,temp(i,1) * temp0,mm(i),tt*t0
+     end do
 
       do l=1,nt
 

@@ -13,7 +13,7 @@ rho_0 = 1.223254617378986
 c_s_0 = 339.99010127578305
 vesc = 11160.421945428408
 
-df = pd.read_fwf(file_path, skiprows=2, header=None, sep='\t')
+df = pd.read_fwf(file_path, header=None, sep='\t')
 
 unique_times = df[6].unique()  # get unique times
 

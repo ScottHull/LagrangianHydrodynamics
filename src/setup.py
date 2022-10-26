@@ -75,10 +75,9 @@ class SphericalSystem:
             )
             self.grid.append(point)
             current += 1
-        self.grid[-1].pressure = 0.0
-        self.grid[-1].density = 0.0
-        # self.grid[0].velocity = 0.5 * self.vesc
-        self.grid[0].velocity = self.u_s
+        self.grid[-1].pressure = 0.0  # vacuum boundary condition
+        self.grid[-1].density = 0.0  # vacuum boundary condition
+        self.grid[0].velocity = self.u_s  # the initial velocity
 
     def __nondimensionalize_initial(self):
         for p in self.grid:
