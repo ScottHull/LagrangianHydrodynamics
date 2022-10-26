@@ -38,64 +38,64 @@ s = solver.LagrangianSolver1DSpherical(
     fig_save_path=output_plots_dir,
 )
 s.solve(max_time=max_time)
-
-# read every file in the output directory and get the first row (time) as a float
-# then sort the list of times
-times = []
-iterations = []
-for f in os.listdir(outfile_dir):
-    with open(os.path.join(outfile_dir, f), "r") as file:
-        times.append(float(file.readline().split()[0]))
-        iterations.append(int(f.split(".")[0]))
-t_i = zip(times, iterations)
-# sort the list of tuples by the first element (time)
-t_i = list(sorted(t_i, key=lambda x: x[0]))
-
-r_0 = 6.4e6  # initial planet radius
-T_0 = 288
-P_0 = 1.01e5
-rho_0 = 1.223254617378986
-c_s_0 = 339.99010127578305
-vesc = 11160.421945428408
-
-# create a figure with 4 subplots
-fig = plt.figure(figsize=(16, 9))
-ax_density = fig.add_subplot(221)
-ax_pressure = fig.add_subplot(222)
-ax_velocity = fig.add_subplot(223)
-ax_temperature = fig.add_subplot(224)
-
-# for each unique time, get the rows that correspond to that time
-# only plot every other time to reduce the number of lines
-for i in range(0, len(t_i), 2):
-    time, iteration = t_i[i]
-    df = pd.read_csv(outfile_dir + "/{}.csv".format(iteration), skiprows=3, header=None, index_col=0)
-    # get the radius, pressure, velocity, density, and temperature
-    radius, mass, pressure, density, velocity, temperature = df[1], df[2], df[3], df[4], df[5], df[6]
-
-    # plot the normalized data
-    ax_density.plot(radius / r_0, density / rho_0, label=f"{time:.2f} s")
-    ax_pressure.plot(radius / r_0, pressure / P_0, label=f"{time:.2f} s")
-    ax_velocity.plot(radius / r_0, velocity / vesc, label=f"{time:.2f} s")
-    ax_temperature.plot(radius / r_0, temperature / T_0, label=f"{time:.2f} s")
-    break
-
-# label the axes
-ax_density.set_xlabel("r / r0")
-ax_density.set_ylabel("rho / rho0")
-ax_pressure.set_xlabel("r / r0")
-ax_pressure.set_ylabel("P / P0")
-ax_velocity.set_xlabel("r / r0")
-ax_velocity.set_ylabel("v / vesc")
-ax_temperature.set_xlabel("r / r0")
-ax_temperature.set_ylabel("T / T0")
-
-# add a grid to each subplot
-for ax in fig.axes:
-    ax.grid()
-
-# add a legend to the first subplot
-ax_density.legend()
-
-plt.savefig("spherical_test.png", dpi=200)
-
+#
+# # read every file in the output directory and get the first row (time) as a float
+# # then sort the list of times
+# times = []
+# iterations = []
+# for f in os.listdir(outfile_dir):
+#     with open(os.path.join(outfile_dir, f), "r") as file:
+#         times.append(float(file.readline().split()[0]))
+#         iterations.append(int(f.split(".")[0]))
+# t_i = zip(times, iterations)
+# # sort the list of tuples by the first element (time)
+# t_i = list(sorted(t_i, key=lambda x: x[0]))
+#
+# r_0 = 6.4e6  # initial planet radius
+# T_0 = 288
+# P_0 = 1.01e5
+# rho_0 = 1.223254617378986
+# c_s_0 = 339.99010127578305
+# vesc = 11160.421945428408
+#
+# # create a figure with 4 subplots
+# fig = plt.figure(figsize=(16, 9))
+# ax_density = fig.add_subplot(221)
+# ax_pressure = fig.add_subplot(222)
+# ax_velocity = fig.add_subplot(223)
+# ax_temperature = fig.add_subplot(224)
+#
+# # for each unique time, get the rows that correspond to that time
+# # only plot every other time to reduce the number of lines
+# # for i in range(0, len(t_i), 2):
+# for i in range(0, len(t_i), 1):
+#     time, iteration = t_i[i]
+#     df = pd.read_csv(outfile_dir + "/{}.csv".format(iteration), skiprows=3, header=None, index_col=0)
+#     # get the radius, pressure, velocity, density, and temperature
+#     radius, mass, pressure, density, velocity, temperature = df[1], df[2], df[3], df[4], df[5], df[6]
+#
+#     # plot the normalized data
+#     ax_density.plot(radius / r_0, density / rho_0, label=f"{time:.2f} s")
+#     ax_pressure.plot(radius / r_0, pressure / P_0, label=f"{time:.2f} s")
+#     ax_velocity.plot(radius / r_0, velocity / vesc, label=f"{time:.2f} s")
+#     ax_temperature.plot(radius / r_0, temperature / T_0, label=f"{time:.2f} s")
+#
+# # label the axes
+# ax_density.set_xlabel("r / r0")
+# ax_density.set_ylabel("rho / rho0")
+# ax_pressure.set_xlabel("r / r0")
+# ax_pressure.set_ylabel("P / P0")
+# ax_velocity.set_xlabel("r / r0")
+# ax_velocity.set_ylabel("v / vesc")
+# ax_temperature.set_xlabel("r / r0")
+# ax_temperature.set_ylabel("T / T0")
+#
+# # add a grid to each subplot
+# for ax in fig.axes:
+#     ax.grid()
+#
+# # add a legend to the first subplot
+# ax_density.legend()
+#
+# # plt.savefig("spherical_test.png", dpi=200)
+# plt.show()

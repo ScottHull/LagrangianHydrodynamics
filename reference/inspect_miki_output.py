@@ -1,3 +1,5 @@
+import os
+import csv
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -13,7 +15,27 @@ rho_0 = 1.223254617378986
 c_s_0 = 339.99010127578305
 vesc = 11160.421945428408
 
-df = pd.read_fwf(file_path, header=None, sep='\t')
+if "tmp.txt" in os.listdir(os.getcwd()):
+    os.remove("tmp.txt")
+fixed_output = open("tmp.txt", 'w')
+with open(file_path, "r") as file:
+    reader = csv.reader(file, delimiter=" ")
+    for line in reader:
+        line = [x for x in line if x != '']
+        for index, i in enumerate(line):
+            if "E-00" in str(i):
+                line[index] = float(str(i).replace("E-00", "e-"))
+            elif "E+00" in str(i):
+                line[index] = float(str(i).replace("E+00", "e+"))
+        fixed_output.write(",".join([str(i) for i in line]) + "\n")
+
+file.close()
+fixed_output.close()
+# os.remove(file_path)
+# os.rename("tmp.txt", file_path)
+
+df = pd.read_csv('tmp.txt', header=None)
+os.remove("tmp.txt")
 
 unique_times = df[6].unique()  # get unique times
 
@@ -26,7 +48,8 @@ ax_temperature = fig.add_subplot(224)
 
 # for each unique time, get the rows that correspond to that time
 # only plot every other time to reduce the number of lines
-for i in range(0, len(unique_times), 2):
+# for i in range(0, len(unique_times), 2):
+for i in range(0, len(unique_times), 1):
     time = unique_times[i]
     df_time = df[df[6] == time]  # time in seconds
     # get the radius, pressure, velocity, density, and temperature
@@ -60,4 +83,3 @@ for ax in fig.axes:
 ax_density.legend()
 
 plt.show()
-

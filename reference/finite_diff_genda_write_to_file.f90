@@ -89,9 +89,10 @@
       dt=dt0
       tt=0d0
 
-      nt=40000*5*2
+!      nt=40000*5*2
 !      nt=1000
       !nt=15
+      nt = 50000
 
       do i=1,n-1
        write(1,*)rr(i,1) * r0,pp(i,1) * p0,uu(i,1)*c0,rho(i,1) * rho0,temp(i,1) * temp0,mm(i),tt*t0
