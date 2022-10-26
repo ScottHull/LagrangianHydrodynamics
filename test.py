@@ -18,6 +18,7 @@ u_s = None  # defaults to 0.5 * u_esc in Genda and Abe 2003
 outfile_dir = "spherical_test_outputs"
 output_plots_dir = "spherical_plots"
 max_time = 3.4  # 1 day in seconds
+mass_atmosphere = 4.10 * 10 ** 18  # kg, mass of atmosphere
 
 s = solver.LagrangianSolver1DSpherical(
     num_shells=num_shells,
@@ -36,6 +37,7 @@ s = solver.LagrangianSolver1DSpherical(
     save_figs=False,
     output_file_interval=10000,
     fig_save_path=output_plots_dir,
+    mass_atmosphere=mass_atmosphere,
 )
 s.solve(max_time=max_time)
 #
@@ -67,8 +69,7 @@ s.solve(max_time=max_time)
 #
 # # for each unique time, get the rows that correspond to that time
 # # only plot every other time to reduce the number of lines
-# # for i in range(0, len(t_i), 2):
-# for i in range(0, len(t_i), 1):
+# for i in range(0, len(t_i), 2):
 #     time, iteration = t_i[i]
 #     df = pd.read_csv(outfile_dir + "/{}.csv".format(iteration), skiprows=3, header=None, index_col=0)
 #     # get the radius, pressure, velocity, density, and temperature
@@ -93,6 +94,7 @@ s.solve(max_time=max_time)
 # # add a grid to each subplot
 # for ax in fig.axes:
 #     ax.grid()
+#     ax.set_yscale("log")
 #
 # # add a legend to the first subplot
 # ax_density.legend()
