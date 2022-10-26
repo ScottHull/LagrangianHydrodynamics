@@ -19,25 +19,25 @@ outfile_dir = "spherical_test_outputs"
 output_plots_dir = "spherical_plots"
 max_time = 3.4  # 1 day in seconds
 
-# s = solver.LagrangianSolver1DSpherical(
-#     num_shells=num_shells,
-#     P_0=P_0,
-#     T_0=T_0,
-#     gamma=gamma,
-#     gamma_a=gamma_a,
-#     m_a=M_a,
-#     r_0=r_0,
-#     mass_planet=mass_planet,
-#     u_s=u_s,
-#     outfile_dir=outfile_dir,
-#     plot_separation=10000,
-#     use_cfl=True,
-#     show_figs=False,
-#     save_figs=False,
-#     output_file_interval=10000,
-#     fig_save_path=output_plots_dir,
-# )
-# s.solve(max_time=max_time)
+s = solver.LagrangianSolver1DSpherical(
+    num_shells=num_shells,
+    P_0=P_0,
+    T_0=T_0,
+    gamma=gamma,
+    gamma_a=gamma_a,
+    m_a=M_a,
+    r_0=r_0,
+    mass_planet=mass_planet,
+    u_s=u_s,
+    outfile_dir=outfile_dir,
+    plot_separation=10000,
+    use_cfl=True,
+    show_figs=False,
+    save_figs=False,
+    output_file_interval=10000,
+    fig_save_path=output_plots_dir,
+)
+s.solve(max_time=max_time)
 
 # read every file in the output directory and get the first row (time) as a float
 # then sort the list of times
