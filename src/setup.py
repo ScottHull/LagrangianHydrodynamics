@@ -124,10 +124,11 @@ class SphericalSystem:
         self.lambda_0 = self.G * self.mass_planet * self.rho_0 / (self.r_0 * self.P_0)
         self.c_s_0 = sqrt(self.gamma_a * self.P_0 / self.rho_0)
         print(
-            "Initial conditions found!\n\tAtmosphere mass: {}\n\tInitial density: {}\n\tInitial pressure: {}\n\t"
+            "Initial conditions found!\n\tAtmosphere mass: {} (error: {} %)\n\tInitial density: {}\n\tInitial pressure: {}\n\t"
             "Initial temperature: {}\n\tInitial radius: {}\n\tInitial velocity: {}\n\tInitial lambda: {}\n\t"
             "Initial c_s: {}".format(
-                self.grid[-1].mass, self.rho_0, self.P_0, self.T_0, self.r_0, self.u_s, self.lambda_0, self.c_s_0)
+                self.grid[-1].mass, abs((mass_atmosphere - self.grid[-1].mass) / self.grid[-1].mass) * 100.0,
+                self.rho_0, self.P_0, self.T_0, self.r_0, self.u_s, self.lambda_0, self.c_s_0)
 
         )
         return self.rho_0
