@@ -70,8 +70,8 @@ class LagrangianSolver1DSpherical:
     def solve(self, max_time: float):
         print("Solving...")
         dimensional_time = 0.0
-        # while dimensional_time <= max_time:
-        while self.iteration < 100001:
+        while dimensional_time <= max_time:
+        # while self.iteration < 100001:
             if self.iteration != 0:
                 dimensional_time = self.__time_dimensional()
                 grid_copy = copy(self.grid)
