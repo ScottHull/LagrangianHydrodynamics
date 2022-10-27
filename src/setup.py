@@ -99,6 +99,7 @@ class SphericalSystem:
         Given the mass of the atmosphere, find the initial density at the surface of the planet.
         """
         print("Iteratively solving for initial conditions that match atmosphere mass...")
+        print("[!] Warning: P_0, lambda_0, and c_s_0 will change from initially given values.")
         iterations = 0
         last_grid_mass = copy(self.grid[-1].mass)
         last_rho_0 = copy(self.rho_0)
