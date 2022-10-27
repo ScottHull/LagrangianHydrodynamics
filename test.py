@@ -18,7 +18,7 @@ u_s = None  # defaults to 0.5 * u_esc in Genda and Abe 2003
 outfile_dir = "spherical_test_outputs"
 output_plots_dir = "spherical_plots"
 fig_name = "spherical_test"
-max_time = 3.4  # 1 day in seconds
+max_time = 129600  # 1.5 days in seconds
 mass_atmosphere = 4.10 * 10 ** 18  # kg, mass of atmosphere
 
 s = solver.LagrangianSolver1DSpherical(
