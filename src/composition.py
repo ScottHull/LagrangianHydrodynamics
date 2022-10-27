@@ -1,6 +1,7 @@
 import re
 import pandas as pd
 
+
 def get_molecular_mass(molecule: str):
     """
     Returns the number of moles of the given composition in weight percent.
@@ -16,6 +17,7 @@ def get_molecular_mass(molecule: str):
             count = 1
         moles += int(count) * pt.loc[atom, 'atomic_mass']
     return moles
+
 
 def get_mean_molecular_mass(composition: dict):
     """

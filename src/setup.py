@@ -103,6 +103,7 @@ class SphericalSystem:
         iterations = 0
         last_grid_mass = copy(self.grid[-1].mass)
         last_rho_0 = copy(self.rho_0)
+        # begin iterative solution for rho_0 and corresponding initial conditions & grid
         while not min([self.grid[-1].mass, last_grid_mass]) < mass_atmosphere < max(
                 [self.grid[-1].mass, last_grid_mass]) or iterations == 0:
             last_grid_mass = copy(self.grid[-1].mass)
@@ -118,11 +119,13 @@ class SphericalSystem:
             self.c_s_0 = sqrt(self.gamma_a * self.P_0 / self.rho_0)
             self.__setup_grid()
             iterations += 1
+        # we have a close enough solution...now interpolate to get the exact mass, re-solve initial conditions
         interp = interp1d([last_grid_mass, self.grid[-1].mass], [last_rho_0, self.rho_0])  # the interpolation function
         self.rho_0 = interp(mass_atmosphere)  # interpolate the density at the atmosphere mass
         self.P_0 = (self.rho_0 * self.R * self.T_0) / self.m_a
         self.lambda_0 = self.G * self.mass_planet * self.rho_0 / (self.r_0 * self.P_0)
         self.c_s_0 = sqrt(self.gamma_a * self.P_0 / self.rho_0)
+        self.__setup_grid()
         print(
             "Initial conditions found!\n\tAtmosphere mass: {} (error: {} %)\n\tInitial density: {}\n\tInitial pressure: {}\n\t"
             "Initial temperature: {}\n\tInitial radius: {}\n\tInitial velocity: {}\n\tInitial lambda: {}\n\t"
