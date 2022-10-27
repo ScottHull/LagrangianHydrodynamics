@@ -17,30 +17,31 @@ P_0 = 1.01e5  # Pa, initial pressure (sea level)
 u_s = None  # defaults to 0.5 * u_esc in Genda and Abe 2003
 outfile_dir = "spherical_test_outputs"
 output_plots_dir = "spherical_plots"
+fig_name = "spherical_test"
 max_time = 3.4  # 1 day in seconds
 mass_atmosphere = 4.10 * 10 ** 18  # kg, mass of atmosphere
 
-# s = solver.LagrangianSolver1DSpherical(
-#     num_shells=num_shells,
-#     P_0=P_0,
-#     T_0=T_0,
-#     gamma=gamma,
-#     gamma_a=gamma_a,
-#     m_a=M_a,
-#     r_0=r_0,
-#     mass_planet=mass_planet,
-#     u_s=u_s,
-#     outfile_dir=outfile_dir,
-#     plot_separation=10000,
-#     use_cfl=True,
-#     show_figs=False,
-#     save_figs=False,
-#     output_file_interval=10000,
-#     fig_save_path=output_plots_dir,
-#     mass_atmosphere=mass_atmosphere,
-#     # rho_0=0.1
-# )
-# s.solve(max_time=max_time)
+s = solver.LagrangianSolver1DSpherical(
+    num_shells=num_shells,
+    P_0=P_0,
+    T_0=T_0,
+    gamma=gamma,
+    gamma_a=gamma_a,
+    m_a=M_a,
+    r_0=r_0,
+    mass_planet=mass_planet,
+    u_s=u_s,
+    outfile_dir=outfile_dir,
+    plot_separation=10000,
+    use_cfl=True,
+    show_figs=False,
+    save_figs=False,
+    output_file_interval=10000,
+    fig_save_path=output_plots_dir,
+    # mass_atmosphere=mass_atmosphere,
+    # rho_0=0.1
+)
+s.solve(max_time=max_time)
 
 # read every file in the output directory and get the first row (time) as a float
 # then sort the list of times
@@ -100,5 +101,5 @@ for ax in fig.axes:
 # add a legend to the first subplot
 ax_density.legend()
 
-# plt.savefig("spherical_test.png", dpi=200)
-plt.show()
+plt.savefig(f"{fig_name}.png", dpi=200)
+# plt.show()
