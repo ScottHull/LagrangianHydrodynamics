@@ -24,18 +24,19 @@ class LagrangianSolver1DSpherical:
                  show_figs=False, **kwargs):
         num_shells += 1
         self.R = R
+        self.P_0 = P_0
         self.rho_0 = kwargs.get("rho_0", P_0 * m_a / (T_0 * R))  # ideal gas
         self.mass_atmosphere = kwargs.get("mass_atmosphere", None)
         if self.mass_atmosphere is None:
             self.system = setup.SphericalSystem(num_shells=num_shells, gamma_a=gamma_a, mass_planet=mass_planet, r_0=r_0,
                                                 rho_0=self.rho_0,
-                                                P_0=P_0, T_0=T_0, m_a=m_a, gamma=gamma, u_s=u_s)
+                                                P_0=self.P_0, T_0=T_0, m_a=m_a, gamma=gamma, u_s=u_s)
         else:  # iteratively solve for rho_0 given mass_atmosphere
             self.system = setup.SphericalSystem(num_shells=num_shells, gamma_a=gamma_a, mass_planet=mass_planet, r_0=r_0,
                                                 rho_0=self.rho_0,
-                                                P_0=P_0, T_0=T_0, m_a=m_a, gamma=gamma, u_s=u_s, mass_atmosphere=self.mass_atmosphere)
+                                                P_0=self.P_0, T_0=T_0, m_a=m_a, gamma=gamma, u_s=u_s, mass_atmosphere=self.mass_atmosphere)
             self.rho_0 = self.system.rho_0
-
+            self.P_0 = self.system.P_0
         self.grid = self.system.grid
         self.time = 0
         self.dt = 0.001 / (r_0 / self.system.c_s_0)
@@ -64,6 +65,7 @@ class LagrangianSolver1DSpherical:
         self.iteration = 0
 
     def solve(self, max_time: float):
+        print("Solving...")
         dimensional_time = 0.0
         # while dimensional_time <= max_time:
         while self.iteration < 100001:

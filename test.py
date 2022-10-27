@@ -38,6 +38,7 @@ s = solver.LagrangianSolver1DSpherical(
     output_file_interval=10000,
     fig_save_path=output_plots_dir,
     mass_atmosphere=mass_atmosphere,
+    # rho_0=0.1
 )
 s.solve(max_time=max_time)
 #
