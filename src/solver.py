@@ -25,18 +25,19 @@ class LagrangianSolver1DSpherical:
         num_shells += 1
         self.R = R
         self.P_0 = P_0
-        self.rho_0 = kwargs.get("rho_0", P_0 * m_a / (T_0 * R))  # ideal gas
+        self.T_0 = T_0
+        self.rho_0 = kwargs.get("rho_0", P_0 * m_a / (self.T_0 * R))  # ideal gas
         self.mass_atmosphere = kwargs.get("mass_atmosphere", None)
         if self.mass_atmosphere is None:
             self.system = setup.SphericalSystem(num_shells=num_shells, gamma_a=gamma_a, mass_planet=mass_planet,
                                                 r_0=r_0,
                                                 rho_0=self.rho_0,
-                                                P_0=self.P_0, T_0=T_0, m_a=m_a, gamma=gamma, u_s=u_s)
+                                                P_0=self.P_0, T_0=self.T_0, m_a=m_a, gamma=gamma, u_s=u_s)
         else:  # iteratively solve for rho_0 given mass_atmosphere
             self.system = setup.SphericalSystem(num_shells=num_shells, gamma_a=gamma_a, mass_planet=mass_planet,
                                                 r_0=r_0,
                                                 rho_0=self.rho_0,
-                                                P_0=self.P_0, T_0=T_0, m_a=m_a, gamma=gamma, u_s=u_s,
+                                                P_0=self.P_0, T_0=self.T_0, m_a=m_a, gamma=gamma, u_s=u_s,
                                                 mass_atmosphere=self.mass_atmosphere)
             self.rho_0 = self.system.rho_0
             self.P_0 = self.system.P_0
@@ -74,7 +75,7 @@ class LagrangianSolver1DSpherical:
         # while self.iteration < 100001:
             if self.iteration != 0:
                 dimensional_time = self.__time_dimensional()
-                grid_copy = copy(self.grid)
+                grid_copy = copy(self.grid)  # time t + 1
                 if self.iteration % 500 == 0:
                     print(
                         "At time {} (max: {} sec.) ({} iterations)".format(dimensional_time, max_time, self.iteration))
@@ -86,17 +87,17 @@ class LagrangianSolver1DSpherical:
                     p.radius = self.radius(index=index, velocity_tplus=p.velocity)
                 for index, p in enumerate(grid_copy):
                     if index < len(self.grid) - 1:
-                        # TODO: is pressure supposed to come before density?
-                        p.pressure = self.pressure(index=index)
+                        # TODO: is pressure supposed to come before density?  I don't think it should matter?
                         p.density = self.density_mid_forward(index=index,
                                                              radius_tplus=p.radius,
                                                              radius_tplus_forward=grid_copy[
                                                                  index + 1].radius)
+                        p.pressure = self.pressure(index=index)
                         p.temperature = self.temperature(pressure_tplus=p.pressure,
-                                                         density_tplus=p.density)
+                                                         density_tplus=p.density, index=index)
                 grid_copy[-1].pressure = 0.0
                 grid_copy[-1].density = 0.0
-                self.grid = grid_copy
+                self.grid = copy(grid_copy)
                 self.__cfl_dt()
             if self.iteration % self.output_file_interval == 0 or self.iteration == 0:
                 mass_loss = self.mass_loss()  # assess atmospheric mass loss
@@ -225,11 +226,13 @@ class LagrangianSolver1DSpherical:
         a2 = (self.grid[index + 1].mass - p.mass) / ((radius_tplus_forward ** 3) - (radius_tplus ** 3))
         return a1 * a2
 
-    def temperature(self, pressure_tplus, density_tplus):
+    def temperature(self, pressure_tplus, density_tplus, index):
         """
         Calculates the temperature of the atmosphere at a given grid index based on an ideal gas condition.
         """
-        return (pressure_tplus / density_tplus) * self.system.m_a / self.R  # ideal gas
+        pressure_tplus_dimensional = pressure_tplus * self.system.P_0
+        density_tplus_dimensional = density_tplus * self.system.rho_0
+        return (pressure_tplus_dimensional / density_tplus_dimensional) * self.system.m_a / self.R / self.T_0  # ideal gas
 
     def plot_timestep(self, timestep):
         if timestep % self.plot_separation != 0:
