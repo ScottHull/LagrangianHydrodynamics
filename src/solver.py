@@ -86,6 +86,7 @@ class LagrangianSolver1DSpherical:
                     p.radius = self.radius(index=index, velocity_tplus=p.velocity)
                 for index, p in enumerate(grid_copy):
                     if index < len(self.grid) - 1:
+                        # TODO: is pressure supposed to come before density?
                         p.pressure = self.pressure(index=index)
                         p.density = self.density_mid_forward(index=index,
                                                              radius_tplus=p.radius,
@@ -226,9 +227,9 @@ class LagrangianSolver1DSpherical:
 
     def temperature(self, pressure_tplus, density_tplus):
         """
-        Calculates the temperature of the atmosphere at a given grid index.
+        Calculates the temperature of the atmosphere at a given grid index based on an ideal gas condition.
         """
-        return (pressure_tplus / density_tplus) * self.system.m_a / self.R
+        return (pressure_tplus / density_tplus) * self.system.m_a / self.R  # ideal gas
 
     def plot_timestep(self, timestep):
         if timestep % self.plot_separation != 0:

@@ -98,7 +98,7 @@ class SphericalSystem:
         """
         Given the mass of the atmosphere, find the initial density at the surface of the planet.
         """
-        print("Iteratively solving for initial conditions that match atmosphere mass...")
+        print("Iteratively solving for initial conditions that match atmosphere mass. This may take a while...")
         print("[!] Warning: P_0, lambda_0, and c_s_0 will change from initially given values.")
         iterations = 0
         last_grid_mass = copy(self.grid[-1].mass)
@@ -114,7 +114,7 @@ class SphericalSystem:
                 self.rho_0 -= increment_rho_0
             # adjust other initial conditions that are dependent on density
             # ideal gas: rho_0 = (P_0 * m_a) / (R * T_0) --> P_0 = (rho_0 * R * T_0) / m_a
-            self.P_0 = (self.rho_0 * self.R * self.T_0) / self.m_a
+            self.P_0 = (self.rho_0 * self.R * self.T_0) / self.m_a  # ideal gas condition
             self.lambda_0 = self.G * self.mass_planet * self.rho_0 / (self.r_0 * self.P_0)
             self.c_s_0 = sqrt(self.gamma_a * self.P_0 / self.rho_0)
             self.__setup_grid()
@@ -122,7 +122,7 @@ class SphericalSystem:
         # we have a close enough solution...now interpolate to get the exact mass, re-solve initial conditions
         interp = interp1d([last_grid_mass, self.grid[-1].mass], [last_rho_0, self.rho_0])  # the interpolation function
         self.rho_0 = interp(mass_atmosphere)  # interpolate the density at the atmosphere mass
-        self.P_0 = (self.rho_0 * self.R * self.T_0) / self.m_a
+        self.P_0 = (self.rho_0 * self.R * self.T_0) / self.m_a  # ideal gas condition
         self.lambda_0 = self.G * self.mass_planet * self.rho_0 / (self.r_0 * self.P_0)
         self.c_s_0 = sqrt(self.gamma_a * self.P_0 / self.rho_0)
         self.__setup_grid()
