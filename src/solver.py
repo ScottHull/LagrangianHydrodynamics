@@ -2,7 +2,7 @@ import os
 import sys
 import shutil
 from math import pi, sqrt, tan
-from copy import copy
+from copy import deepcopy as copy
 import matplotlib.pyplot as plt
 
 from src import setup, output
@@ -75,7 +75,8 @@ class LagrangianSolver1DSpherical:
         # while self.iteration < 100001:
             if self.iteration != 0:
                 dimensional_time = self.__time_dimensional()
-                grid_copy = copy(self.grid)  # time t + 1
+                grid_copy = copy(self.grid)  # time t + 1  # TODO: deep copy is tanking performance
+                # TODO: is deep copy needed if we just swap density and pressure calculations?  look to be the same output!
                 if self.iteration % 500 == 0:
                     print(
                         "At time {} (max: {} sec.) ({} iterations)".format(dimensional_time, max_time, self.iteration))
@@ -88,11 +89,16 @@ class LagrangianSolver1DSpherical:
                 for index, p in enumerate(grid_copy):
                     if index < len(self.grid) - 1:
                         # TODO: is pressure supposed to come before density?  I don't think it should matter?
+                        # p.density = self.density_mid_forward(index=index,
+                        #                                      radius_tplus=p.radius,
+                        #                                      radius_tplus_forward=grid_copy[
+                        #                                          index + 1].radius)
+                        # p.pressure = self.pressure(index=index)
+                        p.pressure = self.pressure(index=index)
                         p.density = self.density_mid_forward(index=index,
                                                              radius_tplus=p.radius,
                                                              radius_tplus_forward=grid_copy[
                                                                  index + 1].radius)
-                        p.pressure = self.pressure(index=index)
                         p.temperature = self.temperature(pressure_tplus=p.pressure,
                                                          density_tplus=p.density, index=index)
                 grid_copy[-1].pressure = 0.0
