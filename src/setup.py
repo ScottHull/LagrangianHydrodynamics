@@ -19,7 +19,6 @@ class Point:
         self.radius = radius
         self.velocity = velocity
 
-
 class SphericalSystem:
 
     def __init__(self, num_shells, gamma_a, mass_planet, r_0, rho_0, P_0, T_0, m_a, gamma, u_s, R=8.314, **kwargs):
