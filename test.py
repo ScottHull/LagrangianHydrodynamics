@@ -6,7 +6,7 @@ import os
 from math import sqrt
 import matplotlib.pyplot as plt
 
-num_shells = 2000
+num_shells = 1000
 r_0 = 6.4e6  # initial planet radius
 mass_planet = 5.972e24  # mass earth
 gamma_a = 1.4  # polytropic exponent

@@ -26,7 +26,8 @@ class LagrangianSolver1DSpherical:
         self.R = R
         self.P_0 = P_0
         self.T_0 = T_0
-        self.rho_0 = kwargs.get("rho_0", P_0 * m_a / (self.T_0 * R))  # ideal gas
+        self.m_a = m_a
+        self.rho_0 = kwargs.get("rho_0", self.P_0 * self.m_a / (self.T_0 * self.R))  # ideal gas
         self.mass_atmosphere = kwargs.get("mass_atmosphere", None)
         if self.mass_atmosphere is None:
             self.system = setup.SphericalSystem(num_shells=num_shells, gamma_a=gamma_a, mass_planet=mass_planet,
@@ -77,13 +78,14 @@ class LagrangianSolver1DSpherical:
         print("Solving...")
         dimensional_time = 0.0
         while dimensional_time <= max_time:
-        # while self.iteration < 100001:
+            # while self.iteration < 100001:
             if self.iteration != 0:
                 dimensional_time = self.__time_dimensional()
                 grid_copy = copy(self.grid)  # time t + 1  # use DEEPCOPY here if pressure is solved before density
                 if self.iteration % 500 == 0:
                     print(
-                        "At time {} (max: {} sec.) ({} iterations)".format(dimensional_time, max_time, self.iteration))
+                        "At time {} (max: {} sec. // dt: {}) ({} iterations)".format(dimensional_time, max_time,
+                                                                                     self.dt, self.iteration))
                 self.__solve_q(grid_copy=grid_copy)
                 for index, p in enumerate(grid_copy):
                     p.velocity = self.velocity(index=index)
@@ -237,7 +239,8 @@ class LagrangianSolver1DSpherical:
         """
         pressure_tplus_dimensional = pressure_tplus * self.system.P_0
         density_tplus_dimensional = density_tplus * self.system.rho_0
-        return (pressure_tplus_dimensional / density_tplus_dimensional) * self.system.m_a / self.R / self.T_0  # ideal gas
+        return (
+                           pressure_tplus_dimensional / density_tplus_dimensional) * self.system.m_a / self.R / self.T_0  # ideal gas
 
     def plot_timestep(self, timestep):
         if timestep % self.plot_separation != 0:

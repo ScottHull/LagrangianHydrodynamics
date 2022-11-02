@@ -5,7 +5,8 @@ from src import plot
 
 plt.style.use('seaborn-colorblind')
 
-times = [0.5, 1, 1.5, 2, 3]
+# times = [0.5, 1, 1.5, 2, 3]
+times = [0]
 output_directory = "spherical_test_outputs"
 
 # read all files in the directory, get the first row (time) as a float, then get the closest time to each time in times
@@ -48,13 +49,13 @@ for index, i in enumerate(closest_iterations):
         ax_temperature=ax_temperature,
         r_0=r_0,
         rho_0=rho_0,
-        P_0=r_0,
+        P_0=P_0,
         vesc=vesc,
         T_0=T_0,
         fig_path="",
         color=colors[index],
-        min_x=1,
-        max_x=1.005
+        # min_x=0.8,
+        # max_x=1.005
     )
 
 plt.savefig("lagrangian.png", format='png')
