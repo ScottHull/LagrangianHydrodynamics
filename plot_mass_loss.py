@@ -35,7 +35,7 @@ y_line = objective(np.arange(0, 100), a, b, c, d, e, f)
 ax.plot(x, y_line, '--', label="fit")
 
 # plot the mass loss fraction vs time
-plt.plot([x[0] for x in times_and_mass_loss_fraction], [x[1] for x in times_and_mass_loss_fraction], linewidth=2.0)
+plt.plot([i[0] for i in times_and_mass_loss_fraction], [i[1] for i in times_and_mass_loss_fraction], linewidth=2.0)
 plt.xlabel("Time (s)")
 plt.ylabel("Mass Loss Fraction")
 plt.title("Mass Loss Fraction vs Time")
