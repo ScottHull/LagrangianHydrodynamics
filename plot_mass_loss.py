@@ -1,4 +1,5 @@
 import os
+import numpy as np
 from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
 
@@ -53,7 +54,7 @@ ax.plot([x[0] for x in times_and_mass_loss_fraction], [x[1] for x in times_and_m
 # fit the curve to times and mass loss
 def objective(x, a, b, c, d, e, f):
     return (a * x) + (b * x**2) + (c * x**3) + (d * x**4) + (e * x**5) + f
-x, y = [x[0] for x in times_and_mass_loss_fraction], [x[1] for x in times_and_mass_loss_fraction]
+x, y = np.array([x[0] for x in times_and_mass_loss_fraction]), np.array([x[1] for x in times_and_mass_loss_fraction])
 popt, _ = curve_fit(objective, x, y)
 a, b, c, d, e, f = popt
 # plot the fit
