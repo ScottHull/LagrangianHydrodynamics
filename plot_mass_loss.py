@@ -21,7 +21,7 @@ for f in os.listdir(output_directory):
 
 # sort the list of tuples by the first element (time)
 times_and_mass_loss_fraction = list(sorted(times_and_mass_loss_fraction, key=lambda x: x[0]))
-ax.plot([x[0] for x in times_and_mass_loss_fraction if x[0]], [x[1] for x in times_and_mass_loss_fraction], linewidth=2.0, label="Calculated")
+ax.plot([x[0] for x in times_and_mass_loss_fraction], [x[1] for x in times_and_mass_loss_fraction], linewidth=2.0, label="Calculated")
 
 # fit the curve to times and mass loss
 def objective(x, a, b, c, d, e, f):
@@ -35,7 +35,6 @@ y_line = objective(np.arange(0, 100), a, b, c, d, e, f)
 ax.plot(x, y_line, '--', label="fit")
 
 # plot the mass loss fraction vs time
-plt.plot([i[0] for i in times_and_mass_loss_fraction], [i[1] for i in times_and_mass_loss_fraction], linewidth=2.0)
 plt.xlabel("Time (s)")
 plt.ylabel("Mass Loss Fraction")
 plt.title("Mass Loss Fraction vs Time")
