@@ -24,14 +24,14 @@ times_and_mass_loss_fraction = list(sorted(times_and_mass_loss_fraction, key=lam
 ax.plot([x[0] for x in times_and_mass_loss_fraction], [x[1] for x in times_and_mass_loss_fraction], linewidth=2.0, label="Calculated")
 
 # fit the curve to times and mass loss
-def objective(x, a, b, c, d, e, f):
-    return (a * x) + (b * x**2) + (c * x**3) + (d * x**4) + (e * x**5) + f
+def objective(x, a, b, c, ):
+    return a * np.exp(-b * x) + c
 x, y = np.array([x[0] for x in times_and_mass_loss_fraction if x[0] > 5]), np.array([x[1] for x in times_and_mass_loss_fraction if x[0] > 5])
 popt, _ = curve_fit(objective, x, y)
-a, b, c, d, e, f = popt
+a, b, c = popt
 # plot the fit
 # y_line = objective(x, a, b, c, d, e, f)
-y_line = objective(np.arange(0, 100), a, b, c, d, e, f)
+y_line = objective(np.arange(0, 100), a, b, c)
 ax.plot(np.arange(0, 100), y_line, '--', label="fit")
 
 # plot the mass loss fraction vs time
