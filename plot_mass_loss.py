@@ -32,7 +32,7 @@ a, b, c, d, e, f = popt
 # plot the fit
 # y_line = objective(x, a, b, c, d, e, f)
 y_line = objective(np.arange(0, 100), a, b, c, d, e, f)
-ax.plot(x, y_line, '--', label="fit")
+ax.plot(np.arange(0, 100), y_line, '--', label="fit")
 
 # plot the mass loss fraction vs time
 plt.xlabel("Time (s)")
