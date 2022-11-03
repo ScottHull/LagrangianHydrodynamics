@@ -1,4 +1,5 @@
 import os
+from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
 
 # use colorblind-friendly colors
@@ -43,11 +44,23 @@ for i in [rho0_output_directory, matm_output_directory]:
             times_and_mass_loss_fraction.append((float(lines[0]), float(lines[2])))
         file.close()
 
-    # sort the list of tuples by the first element (time)
-    times_and_mass_loss_fraction = list(sorted(times_and_mass_loss_fraction, key=lambda x: x[0]))
+# sort the list of tuples by the first element (time)
+times_and_mass_loss_fraction = list(sorted(times_and_mass_loss_fraction, key=lambda x: x[0]))
 
-    # plot the mass loss fraction vs time
-    ax.plot([x[0] for x in times_and_mass_loss_fraction], [x[1] for x in times_and_mass_loss_fraction], linewidth=2.0, label=i.split("/")[-1])
+# plot the mass loss fraction vs time
+ax.plot([x[0] for x in times_and_mass_loss_fraction], [x[1] for x in times_and_mass_loss_fraction], linewidth=2.0, label=i.split("/")[-1])
+
+# fit the curve to times and mass loss
+def objective(x, a, b, c, d, e, f):
+    return (a * x) + (b * x**2) + (c * x**3) + (d * x**4) + (e * x**5) + f
+x, y = [x[0] for x in times_and_mass_loss_fraction], [x[1] for x in times_and_mass_loss_fraction]
+popt, _ = curve_fit(objective, x, y)
+a, b, c, d, e, f = popt
+# plot the fit
+y_line = objective(x, a, b, c, d, e, f)
+ax.plot(x, y_line, '--', label="fit")
+
+
 ax.set_xlabel("Time (s)")
 ax.set_ylabel("Mass Loss Fraction")
 ax.set_title("Mass Loss Fraction vs Time")
