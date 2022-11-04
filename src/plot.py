@@ -43,7 +43,6 @@ def plot_time(output_path, iteration, fig, ax_density, ax_pressure, ax_velocity,
     norm_pressure = [i / P_0 for i in pressure]
     norm_velocity = [i / vesc for i in velocity]
     norm_temperature = [i / T_0 for i in temperature]
-    print(norm_pressure)
 
     ax_density.plot(
         norm_radius,

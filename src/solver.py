@@ -207,7 +207,7 @@ class LagrangianSolver1DSpherical:
         """
         p = self.grid[index]
         if index < len(self.grid) - 1:
-            if (self.grid[index + 1].velocity - p.velocity) < 0:
+            if (self.grid[index + 1].velocity - p.velocity) < 0:  # TODO: will this fix the inner boundary problem?
                 a1 = - self.q_coeff * self.gamma * p.density * (self.grid[index + 1].velocity - p.velocity)
                 a2 = (sqrt(p.pressure / p.density) - (
                         ((self.gamma + 1) / 2) * (self.grid[index + 1].velocity - p.velocity)))
@@ -239,8 +239,8 @@ class LagrangianSolver1DSpherical:
         """
         pressure_tplus_dimensional = pressure_tplus * self.system.P_0
         density_tplus_dimensional = density_tplus * self.system.rho_0
-        return (
-                           pressure_tplus_dimensional / density_tplus_dimensional) * self.system.m_a / self.R / self.T_0  # ideal gas
+        # ideal gas assumption PV = nRT
+        return (pressure_tplus_dimensional / density_tplus_dimensional) * self.system.m_a / self.R / self.T_0
 
     def plot_timestep(self, timestep):
         if timestep % self.plot_separation != 0:
