@@ -169,6 +169,7 @@ class SphericalSystem:
             f.write("mass_planet = {}\n".format(self.mass_planet))
             f.write("r_0 = {}\n".format(self.r_0))
             f.write("mass_atmosphere = {}\n".format(self.grid[-1].mass))
+            f.write("initial_atmosphere_height = {}\n".format(self.grid[-1].radius - self.grid[0].radius))
         f.close()
 
 class JetSystem:
