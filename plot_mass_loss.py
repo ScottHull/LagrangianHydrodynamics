@@ -6,7 +6,8 @@ import matplotlib.pyplot as plt
 # use colorblind-friendly colors
 plt.style.use('seaborn-colorblind')
 # output_directory = "/scratch/shull4/spherical_test_outputs"
-output_directory = "/scratch/shull4/jet_test_outputs"
+# output_directory = "/scratch/shull4/jet_test_outputs"
+output_directory = "jet_test_outputs"
 
 fig = plt.figure(figsize=(16, 9))
 ax = fig.add_subplot(111)
@@ -23,17 +24,17 @@ for f in os.listdir(output_directory):
 times_and_mass_loss_fraction = list(sorted(times_and_mass_loss_fraction, key=lambda x: x[0]))
 ax.plot([x[0] for x in times_and_mass_loss_fraction], [x[1] for x in times_and_mass_loss_fraction], linewidth=2.0, label="Calculated")
 
-# fit the curve to times and mass loss
-def objective(x, a, b, c):
-    return a * np.exp(-b * x) + c
-x, y = np.array([i[0] for i in times_and_mass_loss_fraction if i[0] > 5]), \
-       np.array([i[1] for i in times_and_mass_loss_fraction if i[0] > 5])
-popt, _ = curve_fit(objective, x, y)
-a, b, c = popt
-# plot the fit
-# y_line = objective(x, a, b, c, d, e, f)
-y_line = objective(np.arange(0, 100), a, b, c)
-ax.plot(np.arange(0, 100), y_line, '--', label="fit")
+# # fit the curve to times and mass loss
+# def objective(x, a, b, c):
+#     return a * np.exp(-b * x) + c
+# x, y = np.array([i[0] for i in times_and_mass_loss_fraction if i[0] > 5]), \
+#        np.array([i[1] for i in times_and_mass_loss_fraction if i[0] > 5])
+# popt, _ = curve_fit(objective, x, y)
+# a, b, c = popt
+# # plot the fit
+# # y_line = objective(x, a, b, c, d, e, f)
+# y_line = objective(np.arange(0, 100), a, b, c)
+# ax.plot(np.arange(0, 100), y_line, '--', label="fit")
 
 # plot the mass loss fraction vs time
 plt.xlabel("Time (s)")

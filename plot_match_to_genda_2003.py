@@ -7,7 +7,8 @@ plt.style.use('seaborn-colorblind')
 
 times = [0.5, 1, 1.5, 2, 3]
 # times = [0]
-output_directory = "spherical_test_outputs"
+# output_directory = "spherical_test_outputs"
+output_directory = "jet_test_outputs"
 
 # read all files in the directory, get the first row (time) as a float, then get the closest time to each time in times
 # then sort the list of times

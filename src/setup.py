@@ -1,3 +1,4 @@
+import os
 import sys
 
 import src.initial_conditions as ic
@@ -48,21 +49,23 @@ class SphericalSystem:
             print(
                 "Initial conditions found!\n\tAtmosphere mass: {} (error: {} %)\n\tInitial density: {}\n\tInitial pressure: {}\n\t"
                 "Initial temperature: {}\n\tInitial radius: {}\n\tInitial velocity: {}\n\tInitial lambda: {}\n\t"
-                "Initial c_s: {}".format(
+                "Initial c_s: {}\n\tMean Atmosphere Mass: {}\n\tgamma: {}\n\tgamma_a: {}".format(
                     self.grid[-1].mass, abs((self.mass_atmosphere - self.grid[-1].mass) / self.grid[-1].mass) * 100.0,
-                    self.rho_0, self.P_0, self.T_0, self.r_0, self.u_s, self.lambda_0, self.c_s_0)
+                    self.rho_0, self.P_0, self.T_0, self.r_0, self.u_s, self.lambda_0, self.c_s_0, self.m_a,
+                    self.gamma, self.gamma_a)
 
             )
         else:
             print(
                 "Initial conditions found!\n\tAtmosphere mass: {}\n\tInitial density: {}\n\tInitial pressure: {}\n\t"
                 "Initial temperature: {}\n\tInitial radius: {}\n\tInitial velocity: {}\n\tInitial lambda: {}\n\t"
-                "Initial c_s: {}".format(
+                "Initial c_s: {}\n\tMean Atmosphere Mass: {}\n\tgamma: {}\n\tgamma_a: {}".format(
                     self.grid[-1].mass, self.rho_0, self.P_0, self.T_0, self.r_0, self.u_s,
-                    self.lambda_0, self.c_s_0)
+                    self.lambda_0, self.c_s_0, self.m_a, self.gamma, self.gamma_a)
 
             )
         self.__nondimensionalize_initial()
+        self.write_initial_conditions_to_file(fname=kwargs.get("ic_fname", "initial_conditions.txt"))
 
     def __setup_grid(self):
         self.grid = []  # reset the grid
@@ -145,6 +148,28 @@ class SphericalSystem:
         self.__setup_grid()
         return self.rho_0
 
+    def write_initial_conditions_to_file(self, fname, run_name='hydrodynamic_escape'):
+        """
+        Write the initial conditions to a file.
+        """
+        if os.path.exists(fname):
+            os.remove(fname)
+        with open(fname, 'w') as f:
+            # write the initial conditions
+            f.write(f"Initial Conditions: {run_name}\n")
+            f.write("rho_0 = {}\n".format(self.rho_0))
+            f.write("P_0 = {}\n".format(self.P_0))
+            f.write("T_0 = {}\n".format(self.T_0))
+            f.write("lambda_0 = {}\n".format(self.lambda_0))
+            f.write("c_s_0 = {}\n".format(self.c_s_0))
+            f.write("m_a = {}\n".format(self.m_a))
+            f.write("u_s = {}\n".format(self.u_s))
+            f.write("gamma = {}\n".format(self.gamma))
+            f.write("gamma_a = {}\n".format(self.gamma_a))
+            f.write("mass_planet = {}\n".format(self.mass_planet))
+            f.write("r_0 = {}\n".format(self.r_0))
+            f.write("mass_atmosphere = {}\n".format(self.grid[-1].mass))
+        f.close()
 
 class JetSystem:
 

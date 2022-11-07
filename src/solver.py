@@ -68,6 +68,7 @@ class LagrangianSolver1DSpherical:
                 shutil.rmtree(self.fig_save_path)
             os.mkdir(self.fig_save_path)
         self.iteration = 0
+        self.mass_loss_fraction = 0.0
 
     def solve(self, max_time: float):
         """
@@ -84,8 +85,9 @@ class LagrangianSolver1DSpherical:
                 grid_copy = copy(self.grid)  # time t + 1  # use DEEPCOPY here if pressure is solved before density
                 if self.iteration % 500 == 0:
                     print(
-                        "At time {} (max: {} sec. // dt: {}) ({} iterations)".format(dimensional_time, max_time,
-                                                                                     self.dt, self.iteration))
+                        "At time {} (max: {} sec. // dt: {}) ({} iterations) // mass loss frac. {} %".format(dimensional_time, max_time,
+                                                                                     self.dt, self.iteration,
+                                                                                 self.mass_loss_fraction * 100.0))
                 self.__solve_q(grid_copy=grid_copy)
                 for index, p in enumerate(grid_copy):
                     p.velocity = self.velocity(index=index)
@@ -107,7 +109,7 @@ class LagrangianSolver1DSpherical:
                 self.grid = copy(grid_copy)
                 self.__cfl_dt()
             if self.iteration % self.output_file_interval == 0 or self.iteration == 0:
-                mass_loss = self.mass_loss()  # assess atmospheric mass loss
+                self.mass_loss_fraction = self.mass_loss()  # assess atmospheric mass loss
                 output.write_state(
                     path=self.outfile_dir,
                     system=self.system,
@@ -115,7 +117,7 @@ class LagrangianSolver1DSpherical:
                     time=dimensional_time,
                     timestep=self.iteration,
                     grid=self.grid,
-                    mass_fraction_loss=mass_loss,
+                    mass_fraction_loss=self.mass_loss_fraction,
                 )  # write output files
                 self.output_count += 1  # increment output count
             self.time += self.dt
@@ -329,7 +331,7 @@ class LagrangianSolverJet(LagrangianSolver1DSpherical):
     def velocity(self, index):
         p = self.grid[index]
         if index == 0:
-            return self.grid[index].velocity - (self.lambda_0 / self.gamma / (self.grid[index].radius ** 2)) * self.dt
+            return self.grid[index].velocity - (self.lambda_0 / self.gamma / (p.radius ** 2)) * self.dt
         elif index < len(self.grid) - 1:
             m_forward = self.grid[index + 1].mass
             m_backwards = self.grid[index - 1].mass
@@ -366,5 +368,5 @@ class LagrangianSolverJet(LagrangianSolver1DSpherical):
         """
         p = self.grid[index]
         a1 = 1 / (pi * (radius_tplus ** 2) * (tan(self.theta) ** 2))
-        a2 = (self.grid[index + 1].mass - p.mass) / ((radius_tplus_forward ** 3) - (radius_tplus ** 3))
+        a2 = (self.grid[index + 1].mass - p.mass) / (radius_tplus_forward - radius_tplus)
         return a1 * a2
