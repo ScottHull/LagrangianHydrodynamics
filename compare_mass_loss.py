@@ -7,13 +7,13 @@ import matplotlib.pyplot as plt
 base_path = '/scratch/shull4/'
 outputs = [
     ("jet-500b073S_outputs", "Jet 45 deg."), ("jet-500b073S_outputs_65deg", "Jet 65 deg."),
-    ("spherical-500b073S_outputs", "Spherical"),
+    ("spherical-500b073S_outputs", "Spherical")
 ]
 
+fig = plt.figure(figsize=(16, 9))
+ax = fig.add_subplot(111)
 for p, name in outputs:
     path = os.path.join(base_path, p)
-    fig = plt.figure(figsize=(16, 9))
-    ax = fig.add_subplot(111)
     # read every file in the output directory and get the first row (time) and the third line (mass loss fraction) as floats
     # then sort the list of times and mass loss fractions
     times_and_mass_loss_fraction = []
