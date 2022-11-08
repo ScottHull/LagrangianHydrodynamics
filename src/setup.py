@@ -64,8 +64,8 @@ class SphericalSystem:
                     self.lambda_0, self.c_s_0, self.m_a, self.gamma, self.gamma_a)
 
             )
-        self.__nondimensionalize_initial()
         self.write_initial_conditions_to_file(fname=kwargs.get("ic_fname", "initial_conditions.txt"))
+        self.__nondimensionalize_initial()
 
     def __setup_grid(self):
         self.grid = []  # reset the grid

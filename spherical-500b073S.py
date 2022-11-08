@@ -52,5 +52,6 @@ s = solver.LagrangianSolver1DSpherical(
     save_figs=False,
     output_file_interval=10000,
     fig_save_path=output_plots_dir,
+    run_name=outfile_dir.split("/")[-1],
 )
 s.solve(max_time=max_time)

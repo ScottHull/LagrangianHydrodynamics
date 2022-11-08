@@ -23,6 +23,7 @@ class LagrangianSolver1DSpherical:
                  outfile_dir="/scratch/shull4/outputs", output_file_interval=1000, use_cfl=True, save_figs=False,
                  show_figs=False, **kwargs):
         num_shells += 1
+        self.run_name = kwargs.get("run_name", "default")
         self.R = R
         self.P_0 = P_0
         self.T_0 = T_0
@@ -33,13 +34,14 @@ class LagrangianSolver1DSpherical:
             self.system = setup.SphericalSystem(num_shells=num_shells, gamma_a=gamma_a, mass_planet=mass_planet,
                                                 r_0=r_0,
                                                 rho_0=self.rho_0,
-                                                P_0=self.P_0, T_0=self.T_0, m_a=m_a, gamma=gamma, u_s=u_s)
+                                                P_0=self.P_0, T_0=self.T_0, m_a=m_a, gamma=gamma, u_s=u_s,
+                                                ic_fname=self.run_name + ".txt")
         else:  # iteratively solve for rho_0 given mass_atmosphere
             self.system = setup.SphericalSystem(num_shells=num_shells, gamma_a=gamma_a, mass_planet=mass_planet,
                                                 r_0=r_0,
                                                 rho_0=self.rho_0,
                                                 P_0=self.P_0, T_0=self.T_0, m_a=m_a, gamma=gamma, u_s=u_s,
-                                                mass_atmosphere=self.mass_atmosphere)
+                                                mass_atmosphere=self.mass_atmosphere, ic_fname=self.run_name + ".txt")
             self.rho_0 = self.system.rho_0
             self.P_0 = self.system.P_0
         self.grid = self.system.grid
