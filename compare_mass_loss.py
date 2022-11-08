@@ -27,9 +27,9 @@ for p, name in outputs:
     times_and_mass_loss_fraction = list(sorted(times_and_mass_loss_fraction, key=lambda x: x[0]))
     ax.plot([x[0] for x in times_and_mass_loss_fraction], [x[1] for x in times_and_mass_loss_fraction], linewidth=2.0, label=name)
 
-# plot the mass loss fraction vs time
+plt.legend()
 plt.xlabel("Time (s)")
 plt.ylabel("Mass Loss Fraction")
 plt.title("Mass Loss Fraction vs Time")
 plt.grid()
-plt.savefig("mass_loss_fraction_vs_time_comparision.png", dpi=200)
+plt.savefig("mass_loss_fraction_vs_time_comparison.png", dpi=200)
