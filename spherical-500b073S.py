@@ -21,7 +21,7 @@ bse_composition = {
 num_shells = 1000
 r_0 = 6.4e6  # initial planet radius
 mass_planet = 5.972e24  # mass earth
-gamma = composition.get_heat_capacity_ideal_gas(molecule_type='diatomic', heat_capacity_form='cp') / composition.get_heat_capacity_ideal_gas(molecule_type='diatomic', heat_capacity_form='cv')  # specific heat
+gamma = composition.get_heat_capacity_ideal_gas(molecule_type='diatomic', heat_capacity_form='cp') / composition.get_heat_capacity_ideal_gas(molecule_type='diatomic', heat_capacity_form='cv')  # specific heat, gamma = cp/cv
 gamma_a = gamma  # polytropic exponent
 M_a = composition.get_mean_molecular_mass(bse_composition) / 1000  # g/mol  # molecule mass, will likely have to be heavier for BSE atmosphere
 T_0 = 3063.18893  # K, initial temperature (surface temperature)
