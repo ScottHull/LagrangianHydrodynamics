@@ -1,4 +1,5 @@
 import os
+import pandas as pd
 import matplotlib.pyplot as plt
 
 from src import plot
@@ -9,6 +10,9 @@ times = [0.5, 1, 1.5, 2, 3]
 # times = [0]
 # output_directory = "spherical_test_outputs"
 output_directory = "jet_test_outputs"
+ic_filename = output_directory.split("/")[-1] + ".txt"
+
+ic_df = pd.read_csv(ic_filename, header=None, index_col=0)
 
 # read all files in the directory, get the first row (time) as a float, then get the closest time to each time in times
 # then sort the list of times
@@ -25,12 +29,12 @@ for t in times:
 
 closest_iterations = [x[0] for x in closest_times]
 
-r_0 = 6.4e6  # initial planet radius
-T_0 = 288
-P_0 = 1.01e5
-rho_0 = 1.223254617378986
-c_s_0 = 339.99010127578305
-vesc = 11160.421945428408
+r_0 = float(ic_df[1]['r_0'])  # initial planet radius
+T_0 = float(ic_df[1]['T_0'])
+P_0 = float(ic_df[1]['P_0'])
+rho_0 = float(ic_df[1]['rho_0'])
+c_s_0 = float(ic_df[1]['c_s_0'])
+vesc = float(ic_df[1]['v_esc'])
 
 fig = plt.figure(figsize=(16, 9))
 ax_density = fig.add_subplot(221)

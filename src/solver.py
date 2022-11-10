@@ -143,7 +143,7 @@ class LagrangianSolver1DSpherical:
         dt = copy(self.dt)
         for i in range(0, self.num_shells - 1):
             criterion = (self.grid[i + 1].radius - self.grid[i].radius) / self.grid[i].velocity
-            # criterion = abs(criterion)
+            criterion = abs(criterion)
             if dt > criterion:
                 dt = self.cfl_coefficient * criterion
         self.dt = dt

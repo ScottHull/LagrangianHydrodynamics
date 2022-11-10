@@ -29,10 +29,10 @@ P_0 = 34703699057  # Pa, initial pressure (sea level)
 u_s = 7086.216941  # defaults to 0.5 * u_esc in Genda and Abe 2003
 rho_0 = 3656.224576
 jet_angle = 45.0
-# outfile_dir = "jet_test_outputs"
-# output_plots_dir = "jet_plots"
-outfile_dir = "/scratch/shull4/jet-500b073S_outputs"
-output_plots_dir = "/scratch/shull4/jet-500b073S_plots"
+outfile_dir = "jet_test_outputs"
+output_plots_dir = "jet_plots"
+# outfile_dir = "/scratch/shull4/jet-500b073S_outputs"
+# output_plots_dir = "/scratch/shull4/jet-500b073S_plots"
 max_time = 86400  # 1 day in seconds
 
 s = solver.LagrangianSolverJet(
@@ -52,7 +52,7 @@ s = solver.LagrangianSolverJet(
     use_cfl=True,
     show_figs=False,
     save_figs=False,
-    output_file_interval=10000,
+    output_file_interval=100,
     fig_save_path=output_plots_dir,
     run_name=outfile_dir.split("/")[-1],
 )
