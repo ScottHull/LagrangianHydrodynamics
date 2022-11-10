@@ -1,5 +1,6 @@
 import os
 import shutil
+import pandas as pd
 import matplotlib.pyplot as plt
 
 from src import plot
@@ -10,7 +11,10 @@ iterations_to_plot = [1, 2, 3]
 # output_path = "/scratch/shull4/outputs"
 # fig_path = "/scratch/shull4/lagrangian_figs"
 output_path = "spherical_test_outputs"
+initial_conditions_file = "initial_conditions.txt"
 fig_path = ""
+
+ic_df = pd.read_csv(os.path.join(output_path, initial_conditions_file), sep=",", header=None)
 
 r_0 = 6.4e6  # initial planet radius
 T_0 = 288
