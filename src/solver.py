@@ -180,7 +180,7 @@ class LagrangianSolver1DSpherical:
         """
         p = self.grid[index]
         if index == 0:
-            return self.grid[index].velocity - (self.lambda_0 / self.gamma / (self.grid[index].radius ** 2)) * self.dt
+            return self.grid[index].velocity - (self.lambda_0 / self.gamma / (p.radius ** 2)) * self.dt
         elif index < len(self.grid) - 1:
             m_forward = self.grid[index + 1].mass
             m_backwards = self.grid[index - 1].mass
@@ -190,8 +190,6 @@ class LagrangianSolver1DSpherical:
                 index - 1].q) / (m_forward - m_backwards)
             a4 = (self.lambda_0 / (self.gamma * (p.radius ** 2)))
             return p.velocity - (((a1 * a2 * a3) + a4) * self.dt)
-        # else:
-        #     return self.grid[index].velocity
 
     def pressure(self, index):
         """
@@ -211,7 +209,7 @@ class LagrangianSolver1DSpherical:
         """
         p = self.grid[index]
         if index < len(self.grid) - 1:
-            if (self.grid[index + 1].velocity - p.velocity) < 0:  # TODO: will this fix the inner boundary problem?
+            if (self.grid[index + 1].velocity - p.velocity) < 0:
                 a1 = - self.q_coeff * self.gamma * p.density * (self.grid[index + 1].velocity - p.velocity)
                 a2 = (sqrt(p.pressure / p.density) - (
                         ((self.gamma + 1) / 2) * (self.grid[index + 1].velocity - p.velocity)))
