@@ -27,7 +27,6 @@ M_a = composition.get_mean_molecular_mass(bse_composition) / 1000  # g/mol to kg
 T_0 = 3063.18893  # K, initial temperature (surface temperature)
 u_s = 7086.216941  # defaults to 0.5 * u_esc in Genda and Abe 2003
 P_0, rho_0 = composition.get_P0_and_rho0_given_T0(T_0)
-print("*** P_0 = {} Pa, rho_0 = {} kg/m^3 ***".format(P_0, rho_0))
 jet_angle = 45.0
 outfile_dir = "jet_test_outputs"
 output_plots_dir = "jet_plots"
