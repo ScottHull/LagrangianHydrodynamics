@@ -67,6 +67,5 @@ def animate(start_time, end_time, interval, path, filename="animation.mp4", fps=
     animation = mpy.ImageSequenceClip(frames, fps=fps, load_images=True)
     animation.write_videofile(filename, fps=fps)
 
-
 animate(min_iteration, max_iteration, 1, to_dir, filename="animation.mp4", fps=30, reverse=False)
-
+shutil.rmtree(to_dir)
