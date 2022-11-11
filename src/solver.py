@@ -331,7 +331,7 @@ class LagrangianSolverJet(LagrangianSolver1DSpherical):
     def velocity(self, index):
         p = self.grid[index]
         if index == 0:
-            return self.grid[index].velocity - (self.lambda_0 / self.gamma / (p.radius ** 2)) * self.dt
+            return p.velocity - (self.lambda_0 / self.gamma / (p.radius ** 2)) * self.dt
         elif index < len(self.grid) - 1:
             m_forward = self.grid[index + 1].mass
             m_backwards = self.grid[index - 1].mass

@@ -25,9 +25,8 @@ gamma = composition.get_heat_capacity_ideal_gas(molecule_type='diatomic', heat_c
 gamma_a = gamma  # polytropic exponent
 M_a = composition.get_mean_molecular_mass(bse_composition) / 1000  # g/mol  # molecule mass, will likely have to be heavier for BSE atmosphere
 T_0 = 3063.18893  # K, initial temperature (surface temperature)
-P_0 = 34703699057  # Pa, initial pressure (sea level)
 u_s = 7086.216941  # defaults to 0.5 * u_esc in Genda and Abe 2003
-rho_0 = 3656.224576
+P_0, rho_0 = composition.get_P0_and_rho0_given_T0(T_0)
 jet_angle = 45.0
 outfile_dir = "jet_test_outputs"
 output_plots_dir = "jet_plots"

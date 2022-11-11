@@ -1,4 +1,5 @@
 import re
+from scipy.interpolate import interp1d
 import pandas as pd
 
 
@@ -51,3 +52,26 @@ def get_heat_capacity_ideal_gas(molecule_type='diatomic', heat_capacity_form='cp
         return cp
     elif heat_capacity_form == 'cv':
         return cv
+
+def get_P0_and_rho0_given_T0(T_0):
+    """
+    Using the phase curve allows for a single-state variable to be used to describe the initial conditions.
+    Because temperature is the more reliable state variable from the SPH giant impact, we use it to calculate.
+    Using the Hugoniot would require 2 state variables, which is not ideal.
+    Note that SPH temperatures are typically underestimates.
+    Using the dunite phase curve, uses the given temperature to interpolate the corresponding pressure and density.
+    """
+    phase_curve = pd.read_csv("src/data/dunite_phase_boundary.txt", skiprows=1, sep='\s+')
+    # get the temperature above and below the given temperature
+    T_below = phase_curve[phase_curve['T'] < T_0]['T'].iloc[-1]
+    T_above = phase_curve[phase_curve['T'] > T_0]['T'].iloc[0]
+    # get the corresponding pressures and densities
+    P_below = phase_curve[phase_curve['T'] < T_0]['PVAP'].iloc[-1]
+    P_above = phase_curve[phase_curve['T'] > T_0]['PVAP'].iloc[0]
+    rho_below = phase_curve[phase_curve['T'] < T_0]['RHOVAP'].iloc[-1]
+    rho_above = phase_curve[phase_curve['T'] > T_0]['RHOVAP'].iloc[0]
+    # print out the 2 closest points and the interpolated temperature
+    # interpolate the pressure and density
+    P_0 = interp1d([T_below, T_above], [P_below, P_above])(T_0)
+    rho_0 = interp1d([T_below, T_above], [rho_below, rho_above])(T_0)
+    return P_0 * 10 ** 9, rho_0
