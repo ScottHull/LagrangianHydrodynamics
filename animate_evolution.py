@@ -11,7 +11,8 @@ plt.style.use('seaborn-colorblind')
 
 min_iteration = 0
 max_iteration = 3000
-output_directory = "jet_test_outputs"
+# output_directory = "jet_test_outputs"
+output_directory = "/scratch/shull4/jet-500b073S"
 to_dir = "animate"
 ic_filename = output_directory.split("/")[-1] + ".txt"
 
@@ -27,17 +28,16 @@ P_0 = float(ic_df[1]['P_0'])
 rho_0 = float(ic_df[1]['rho_0'])
 c_s_0 = float(ic_df[1]['c_s_0'])
 vesc = float(ic_df[1]['v_esc'])
-
-fig = plt.figure(figsize=(16, 9))
-ax_density = fig.add_subplot(221)
-ax_pressure = fig.add_subplot(222)
-ax_velocity = fig.add_subplot(223)
-ax_temperature = fig.add_subplot(224)
-
-colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
 dir_content = os.listdir(output_directory)
 for index, i in enumerate(range(min_iteration, max_iteration + 1)):
     if "{}.csv".format(i) in dir_content:
+        fig = plt.figure(figsize=(16, 9))
+        ax_density = fig.add_subplot(221)
+        ax_pressure = fig.add_subplot(222)
+        ax_velocity = fig.add_subplot(223)
+        ax_temperature = fig.add_subplot(224)
+
+        colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
         plot.plot_time(
             output_path=output_directory,
             iteration=i,
@@ -53,8 +53,6 @@ for index, i in enumerate(range(min_iteration, max_iteration + 1)):
             T_0=T_0,
             fig_path="",
             color=colors[index],
-            # min_x=0.8,
-            # max_x=1.005
         )
         plt.savefig(to_dir + f"/{i}.png", format='png')
 
