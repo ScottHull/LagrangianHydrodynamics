@@ -12,7 +12,7 @@ plt.style.use('seaborn-colorblind')
 min_iteration = 0
 max_iteration = 3000
 # output_directory = "jet_test_outputs"
-output_directory = "/scratch/shull4/jet-500b073S"
+output_directory = "/scratch/shull4/jet_500b073S"
 to_dir = "animate"
 ic_filename = output_directory.split("/")[-1] + ".txt"
 
@@ -37,7 +37,6 @@ for index, i in enumerate(range(min_iteration, max_iteration + 1)):
         ax_velocity = fig.add_subplot(223)
         ax_temperature = fig.add_subplot(224)
 
-        colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
         plot.plot_time(
             output_path=output_directory,
             iteration=i,
@@ -52,7 +51,7 @@ for index, i in enumerate(range(min_iteration, max_iteration + 1)):
             vesc=vesc,
             T_0=T_0,
             fig_path="",
-            color=colors[index],
+            color='black',
         )
         plt.savefig(to_dir + f"/{i}.png", format='png')
 
