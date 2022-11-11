@@ -63,13 +63,13 @@ def get_P0_and_rho0_given_T0(T_0):
     """
     phase_curve = pd.read_csv("src/data/dunite_phase_boundary.txt", skiprows=1, sep='\s+')
     # get the temperature above and below the given temperature
-    T_below = phase_curve[phase_curve['T'] < T_0]['T'].iloc[-1]
-    T_above = phase_curve[phase_curve['T'] > T_0]['T'].iloc[0]
+    T_below = phase_curve[phase_curve['T'] < T_0]['T'].iloc[0]
+    T_above = phase_curve[phase_curve['T'] > T_0]['T'].iloc[-1]
     # get the corresponding pressures and densities
-    P_below = phase_curve[phase_curve['T'] < T_0]['PVAP'].iloc[-1]
-    P_above = phase_curve[phase_curve['T'] > T_0]['PVAP'].iloc[0]
-    rho_below = phase_curve[phase_curve['T'] < T_0]['RHOVAP'].iloc[-1]
-    rho_above = phase_curve[phase_curve['T'] > T_0]['RHOVAP'].iloc[0]
+    P_below = phase_curve[phase_curve['T'] < T_0]['PVAP'].iloc[0]
+    P_above = phase_curve[phase_curve['T'] > T_0]['PVAP'].iloc[-1]
+    rho_below = phase_curve[phase_curve['T'] < T_0]['RHOVAP'].iloc[0]
+    rho_above = phase_curve[phase_curve['T'] > T_0]['RHOVAP'].iloc[-1]
     # print out the 2 closest points and the interpolated temperature
     # interpolate the pressure and density
     P_0 = interp1d([T_below, T_above], [P_below, P_above])(T_0)
