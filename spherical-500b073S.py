@@ -21,16 +21,17 @@ bse_composition = {
 num_shells = 1000
 r_0 = 6.4e6  # initial planet radius
 mass_planet = 5.972e24  # mass earth
-gamma = composition.get_heat_capacity_ideal_gas(molecule_type='diatomic', heat_capacity_form='cp') / composition.get_heat_capacity_ideal_gas(molecule_type='diatomic', heat_capacity_form='cv')  # specific heat, gamma = cp/cv
+gamma = composition.get_heat_capacity_ideal_gas(molecule_type='diatomic',
+                                                heat_capacity_form='cp') / composition.get_heat_capacity_ideal_gas(
+    molecule_type='diatomic', heat_capacity_form='cv')  # specific heat
 gamma_a = gamma  # polytropic exponent
-M_a = composition.get_mean_molecular_mass(bse_composition) / 1000  # g/mol  # molecule mass, will likely have to be heavier for BSE atmosphere
+# M_a = composition.get_mean_molecular_mass(disk_composition) / 1000  # g/mol to kg/mol
+M_a = 0.036
 T_0 = 3063.18893  # K, initial temperature (surface temperature)
-P_0 = 34703699057  # Pa, initial pressure (sea level)
 u_s = 7086.216941  # defaults to 0.5 * u_esc in Genda and Abe 2003
-rho_0 = 3656.224576
-jet_angle = 45.0
-# outfile_dir = "jet_test_outputs"
-# output_plots_dir = "jet_plots"
+P_0, rho_0 = composition.get_P0_and_rho0_given_T0(T_0)
+# outfile_dir = "spherical_test_outputs"
+# output_plots_dir = "spherical_plots"
 outfile_dir = "/scratch/shull4/spherical-500b073S_outputs"
 output_plots_dir = "/scratch/shull4/spherical-500b073S_plots"
 max_time = 86400  # 1 day in seconds

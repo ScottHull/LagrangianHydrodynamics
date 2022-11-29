@@ -24,10 +24,16 @@ def get_mean_molecular_mass(composition: dict):
     """
     Returns the mean molecular mass of the given composition in weight percent.
     """
+    # remove the gas label
+    cleaned_composition = {key.split("_")[0].replace("+", "").replace("-", ""): value
+                           for key, value in composition.items()}
+    # remove species with 0 weight percent
+    cleaned_composition = {key: value for key, value in cleaned_composition.items() if value != 0}
     # get the sum of the masses in the composition dict
-    total_mass = sum(composition.values())
+    total_mass = sum(cleaned_composition.values())
     # get the number of moles in the composition dict
-    total_moles = sum([(1 / get_molecular_mass(molecule)) * composition[molecule] for molecule in composition.keys()])
+    total_moles = sum([(1 / get_molecular_mass(molecule)) * cleaned_composition[molecule]
+                       for molecule in cleaned_composition.keys()])
     return total_mass / total_moles
 
 def get_heat_capacity_ideal_gas(molecule_type='diatomic', heat_capacity_form='cp', R=8.31446261815324):
