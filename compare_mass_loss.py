@@ -26,6 +26,8 @@ for p, name in outputs:
     # sort the list of tuples by the first element (time)
     times_and_mass_loss_fraction = list(sorted(times_and_mass_loss_fraction, key=lambda x: x[0]))
     ax.plot([x[0] for x in times_and_mass_loss_fraction], [x[1] for x in times_and_mass_loss_fraction], linewidth=2.0, label=name)
+    # annotate the last y value in the upper right corner
+    ax.annotate(f"Final Mass Loss Frac.: {times_and_mass_loss_fraction[-1][1]:.2f}", (times_and_mass_loss_fraction[-1][0], times_and_mass_loss_fraction[-1][1]))
 
 plt.legend()
 plt.xlabel("Time (s)")
