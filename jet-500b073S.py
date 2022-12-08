@@ -35,9 +35,10 @@ gamma = composition.get_heat_capacity_ideal_gas(molecule_type='diatomic',
 gamma_a = gamma  # polytropic exponent
 # M_a = composition.get_mean_molecular_mass(disk_composition) / 1000  # g/mol to kg/mol
 M_a = 0.036
-T_0 = 3063.18893  # K, initial temperature (surface temperature)
+S_0 = 3200  # entropy at time of impact, better conserved than temperature
+# T_0 = 3063.18893  # K, initial temperature (surface temperature)
 u_s = 7086.216941  # defaults to 0.5 * u_esc in Genda and Abe 2003
-P_0, rho_0 = composition.get_P0_and_rho0_given_T0(T_0)
+P_0, rho_0, T_0 = composition.get_P0_rho0_T0_given_S0(S_0)  # initial pressure, density, and temperature
 jet_angle = 45.0
 # outfile_dir = "jet_test_outputs"
 # output_plots_dir = "jet_plots"
