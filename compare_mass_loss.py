@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 # use colorblind-friendly colors
 base_path = '/scratch/shull4/'
 outputs = [
-    ("jet-500b073S_outputs", "Jet 45 deg."), ("jet-500b073S_outputs_65deg", "Jet 65 deg."),
-    ("spherical-500b073S_outputs", "Spherical")
+    ("jet_500b073S", "jet_500b073S 3063 K"), ("jet_500b073S_4000deg", "jet_500b073S 4000 K"),
+    ("jet_500b073S_5000deg", "jet_500b073S 5000 K")
 ]
 
 fig = plt.figure(figsize=(16, 9))

@@ -27,9 +27,10 @@ gamma = composition.get_heat_capacity_ideal_gas(molecule_type='diatomic',
 gamma_a = gamma  # polytropic exponent
 # M_a = composition.get_mean_molecular_mass(disk_composition) / 1000  # g/mol to kg/mol
 M_a = 0.036
-S_0 = 4255.76  # entropy at time of impact, better conserved than temperature
-u_s = 8795.69  # defaults to 0.5 * u_esc in Genda and Abe 2003
-P_0, rho_0, T_0 = composition.get_P0_rho0_T0_given_S0(S_0)  # initial pressure, density, and temperature
+u_s = 8.795686285 * 1000.0  # defaults to 0.5 * u_esc in Genda and Abe 2003
+T_0 = 2682.610362  # K
+# P_0, rho_0, T_0 = composition.get_P0_rho0_T0_given_S0(S_0)  # initial pressure, density, and temperature
+P_0, rho_0 = composition.get_P0_and_rho0_given_T0(T_0)
 # outfile_dir = "spherical_test_outputs"
 # output_plots_dir = "spherical_plots"
 outfile_dir = "/scratch/shull4/spherical-500b073S_outputs"
