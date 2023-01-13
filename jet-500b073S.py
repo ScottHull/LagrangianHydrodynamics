@@ -63,7 +63,7 @@ s = solver.LagrangianSolverJet(
     use_cfl=True,
     show_figs=False,
     save_figs=False,
-    output_file_interval=100,
+    output_file_interval=10000,
     fig_save_path=output_plots_dir,
     run_name=outfile_dir.split("/")[-1],
 )
