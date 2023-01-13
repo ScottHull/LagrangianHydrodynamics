@@ -28,7 +28,7 @@ import matplotlib.pyplot as plt
 
 num_shells = 1000
 r_0 = 6.4e6  # initial planet radius
-mass_planet = 5.972e24  # mass earth
+mass_planet = 1.019 * 5.972e24  # mass earth
 gamma = composition.get_heat_capacity_ideal_gas(molecule_type='diatomic',
                                                 heat_capacity_form='cp') / composition.get_heat_capacity_ideal_gas(
     molecule_type='diatomic', heat_capacity_form='cv')  # specific heat

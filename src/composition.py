@@ -105,5 +105,4 @@ def get_P0_rho0_T0_given_S0(S_0, phase_curve_path="src/data/dunite_phase_boundar
     P_0 = interp1d([S_below, S_above], [P_below, P_above])(S_0)
     rho_0 = interp1d([S_below, S_above], [rho_below, rho_above])(S_0)
     T_0 = interp1d([S_below, S_above], [T_below, T_above])(S_0)
-    print(S_0, S_below, S_above, P_0 * 10 ** 9, rho_0, T_0)
     return P_0 * 10 ** 9, rho_0, T_0
