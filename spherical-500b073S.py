@@ -53,7 +53,7 @@ s = solver.LagrangianSolver1DSpherical(
     use_cfl=True,
     show_figs=False,
     save_figs=False,
-    output_file_interval=10000,
+    output_file_interval=1000,
     fig_save_path=output_plots_dir,
     run_name=outfile_dir.split("/")[-1],
 )
