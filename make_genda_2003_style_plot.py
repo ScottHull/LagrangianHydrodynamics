@@ -70,7 +70,11 @@ for i in range(len(times)):
 # we plot velocity in row 1, density in row 2, pressure in row 3, and temperature in row 4
 for i, timeset in enumerate(closest_times):
     for j, (iteration, time) in enumerate(timeset):
-        df = pd.read_csv(os.path.join(output_directory, f"{iteration}.csv"), skiprows=3, header=None, index_col=0)
+        # try to open the file, if it doesn't exist, skip it
+        try:
+            df = pd.read_csv(os.path.join(output_directory, f"{iteration}.csv"), skiprows=3, header=None, index_col=0)
+        except FileNotFoundError:
+            continue
         radius, mass, pressure, density, velocity, temperature = df[1], df[2], df[3], df[4], df[5], df[6]
         axes[0, i].plot(
             radius / r_0, velocity / vesc, color='black', linewidth=2.0
