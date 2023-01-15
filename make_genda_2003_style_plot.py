@@ -41,12 +41,12 @@ for f in os.listdir(output_directory):
         iteration_and_time.append((int(f.split(".")[0]), float(file.readlines()[0].split()[0])))
 iteration_and_time = list(sorted(iteration_and_time, key=lambda x: x[1]))
 
-# get the closest time to each time in times
+# get the closest time to each time in times, where 0 is excluded
 closest_times = []
 for timeset in times:
     closest_times.append([])
     for t in timeset:
-        closest_times[-1].append(min(iteration_and_time, key=lambda x: abs(x[1] - t)))
+        closest_times[-1].append(min(iteration_and_time[1:], key=lambda x: abs(x[1] - t)))
 
 
 # set up the figure, where there are 4 rows and len(times) columns
