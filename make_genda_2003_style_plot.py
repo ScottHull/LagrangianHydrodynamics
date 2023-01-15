@@ -111,4 +111,4 @@ for i, timeset in enumerate(closest_times):
             )
 
 # save the figure
-plt.savefig(f"{}_genda_2003_style_plot.png".format(output_directory.split("/")[-1]), dpi=300)
+plt.savefig(f"{output_directory.split('/')[-1]}_genda_2003_style_plot.png", dpi=300)
