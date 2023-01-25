@@ -23,6 +23,8 @@ for f in os.listdir(output_directory):
 # sort the list of tuples by the first element (time)
 times_and_mass_loss_fraction = list(sorted(times_and_mass_loss_fraction, key=lambda x: x[0]))
 ax.plot([x[0] for x in times_and_mass_loss_fraction], [x[1] for x in times_and_mass_loss_fraction], linewidth=2.0, label="Calculated")
+ax.annotate(f"Final Mass Loss Frac.: {times_and_mass_loss_fraction[-1][1]:.2f}",
+            (times_and_mass_loss_fraction[-1][0], times_and_mass_loss_fraction[-1][1]))
 
 # # fit the curve to times and mass loss
 # def objective(x, a, b, c):
