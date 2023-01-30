@@ -78,16 +78,16 @@ for i, timeset in enumerate(closest_times):
             continue
         radius, mass, pressure, density, velocity, temperature = df[1], df[2], df[3], df[4], df[5], df[6]
         axes[0, i].plot(
-            radius / r_0, velocity / vesc, color='black', linewidth=2.0, label=time
+            radius / r_0, velocity / vesc, linewidth=2.0, label=time
         )
         axes[1, i].plot(
-            radius / r_0, density / rho_0, color='black', linewidth=2.0, label=time
+            radius / r_0, density / rho_0, linewidth=2.0, label=time
         )
         axes[2, i].plot(
-            radius / r_0, pressure / P_0, color='black', linewidth=2.0, label=time
+            radius / r_0, pressure / P_0, linewidth=2.0, label=time
         )
         axes[3, i].plot(
-            radius / r_0, temperature / T_0, color='black', linewidth=2.0, label=time
+            radius / r_0, temperature / T_0, linewidth=2.0, label=time
         )
 
         labelLines(plt.gca().get_lines(), zorder=2.5)
