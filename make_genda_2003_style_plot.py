@@ -2,6 +2,7 @@ import os
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from labellines import labelLines
 
 from src import plot
 
@@ -77,42 +78,44 @@ for i, timeset in enumerate(closest_times):
             continue
         radius, mass, pressure, density, velocity, temperature = df[1], df[2], df[3], df[4], df[5], df[6]
         axes[0, i].plot(
-            radius / r_0, velocity / vesc, color='black', linewidth=2.0
+            radius / r_0, velocity / vesc, color='black', linewidth=2.0, label=time
         )
         axes[1, i].plot(
-            radius / r_0, density / rho_0, color='black', linewidth=2.0
+            radius / r_0, density / rho_0, color='black', linewidth=2.0, label=time
         )
         axes[2, i].plot(
-            radius / r_0, pressure / P_0, color='black', linewidth=2.0
+            radius / r_0, pressure / P_0, color='black', linewidth=2.0, label=time
         )
         axes[3, i].plot(
-            radius / r_0, temperature / T_0, color='black', linewidth=2.0
+            radius / r_0, temperature / T_0, color='black', linewidth=2.0, label=time
         )
 
+        labelLines(plt.gca().get_lines(), zorder=2.5)
+
         # annotate each line with the time at the maximum y value in column 1, else use the maximum y value in the column
-        for index, ax in enumerate(axes[:, i]):
-            if i == 0:
-                # get the maximum y value of the line
-                y = max(ax.lines[-1].get_ydata())
-                # get the x value at the maximum y value
-                x = ax.lines[-1].get_xdata()[np.argmax(ax.lines[-1].get_ydata())]
-            else:
-                # get the minimum y value of the line
-                y = min(ax.lines[-1].get_ydata())
-                # get the x value at the minimum y value
-                x = ax.lines[-1].get_xdata()[np.argmin(ax.lines[-1].get_ydata())]
-            # annotate the line with the time at xy
-            ax.annotate(
-                f"{time:.1f} s",
-                xy=(x, y),
-                xytext=(x, y),
-                textcoords="offset points",
-                xycoords="data",
-                ha="center",
-                va="bottom",
-                fontsize=14,
-                color="black",
-            )
+        # for index, ax in enumerate(axes[:, i]):
+        #     if i == 0:
+        #         # get the maximum y value of the line
+        #         y = max(ax.lines[-1].get_ydata())
+        #         # get the x value at the maximum y value
+        #         x = ax.lines[-1].get_xdata()[np.argmax(ax.lines[-1].get_ydata())]
+        #     else:
+        #         # get the minimum y value of the line
+        #         y = min(ax.lines[-1].get_ydata())
+        #         # get the x value at the minimum y value
+        #         x = ax.lines[-1].get_xdata()[np.argmin(ax.lines[-1].get_ydata())]
+        #     # annotate the line with the time at xy
+        #     ax.annotate(
+        #         f"{time:.1f} s",
+        #         xy=(x, y),
+        #         xytext=(x, y),
+        #         textcoords="offset points",
+        #         xycoords="data",
+        #         ha="center",
+        #         va="bottom",
+        #         fontsize=14,
+        #         color="black",
+        #     )
 
 # save the figure
 plt.savefig(f"{output_directory.split('/')[-1]}_genda_2003_style_plot.png", dpi=300)
