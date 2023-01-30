@@ -78,19 +78,20 @@ for i, timeset in enumerate(closest_times):
             continue
         radius, mass, pressure, density, velocity, temperature = df[1], df[2], df[3], df[4], df[5], df[6]
         axes[0, i].plot(
-            radius / r_0, velocity / vesc, linewidth=2.0, label=time
+            radius / r_0, velocity / vesc, linewidth=2.0, label=f"{time:.1f} s",
         )
         axes[1, i].plot(
-            radius / r_0, density / rho_0, linewidth=2.0, label=time
+            radius / r_0, density / rho_0, linewidth=2.0, label=f"{time:.1f} s",
         )
         axes[2, i].plot(
-            radius / r_0, pressure / P_0, linewidth=2.0, label=time
+            radius / r_0, pressure / P_0, linewidth=2.0, label=f"{time:.1f} s",
         )
         axes[3, i].plot(
-            radius / r_0, temperature / T_0, linewidth=2.0, label=time
+            radius / r_0, temperature / T_0, linewidth=2.0, label=f"{time:.1f} s",
         )
 
-        labelLines(plt.gca().get_lines(), zorder=2.5)
+for ax in axes.flatten():
+    labelLines(ax.get_lines(), zorder=2.5)
 
         # annotate each line with the time at the maximum y value in column 1, else use the maximum y value in the column
         # for index, ax in enumerate(axes[:, i]):
