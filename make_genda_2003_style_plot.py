@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from labellines import labelLines
+from itertools import groupby
 
 from src import plot
 
@@ -11,9 +12,12 @@ plt.style.use('seaborn-colorblind')
 # ====================================== INPUTS ======================================
 
 times = [
-    [0.5, 1, 1.5, 2, 3],
-    [3.5, 4, 4.5, 5],
-    [100, 200, 400, 600, 800, 1000, 1200, 1400, 1600],
+    # [0.5, 1, 1.5, 2, 3],
+    # [3.5, 4, 4.5, 5],
+    # [100, 600, 1000, 1400, 1600],
+    [1, 3, 5],
+    [10, 15, 20],
+    [100, 1000, 1500]
 ]
 
 output_directory = "/scratch/shull4/spherical-500b073S_outputs"  # the directory containing the output files
@@ -47,7 +51,9 @@ closest_times = []
 for timeset in times:
     closest_times.append([])
     for t in timeset:
-        closest_times[-1].append(min(iteration_and_time[1:], key=lambda x: abs(x[1] - t)))
+        closest_time = min(iteration_and_time[1:], key=lambda x: abs(x[1] - t))
+        if closest_time[1] not in [i[1] for i in closest_times[-1]]:
+            closest_times[-1].append(closest_time)
 
 
 # set up the figure, where there are 4 rows and len(times) columns
@@ -92,6 +98,10 @@ for i, timeset in enumerate(closest_times):
 
 for ax in axes.flatten():
     labelLines(ax.get_lines(), zorder=2.5)
+
+for index, ax in enumerate(axes.flatten()):
+    if index in [4,5,7,8]:
+        ax.set_yscale("log")
 
         # annotate each line with the time at the maximum y value in column 1, else use the maximum y value in the column
         # for index, ax in enumerate(axes[:, i]):
