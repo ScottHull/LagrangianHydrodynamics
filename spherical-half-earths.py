@@ -33,8 +33,8 @@ T_0 = 3517.8334184120226  # K
 P_0, rho_0 = composition.get_P0_and_rho0_given_T0(T_0)
 # outfile_dir = "spherical_test_outputs"
 # output_plots_dir = "spherical_plots"
-outfile_dir = "/scratch/shull4/spherical-500b073S_outputs"
-output_plots_dir = "/scratch/shull4/spherical-500b073S_plots"
+outfile_dir = "/scratch/shull4/spherical-half-earths_outputs"
+output_plots_dir = "/scratch/shull4/spherical-half-earths_plots"
 max_time = 86400  # 1 day in seconds
 
 s = solver.LagrangianSolver1DSpherical(
